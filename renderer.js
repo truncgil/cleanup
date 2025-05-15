@@ -12,6 +12,8 @@ const logContainer = document.getElementById('log-container');
 const logContent = document.getElementById('log-content');
 const clearLogsButton = document.getElementById('clear-logs');
 const appLogo = document.getElementById('app-logo');
+const selectAllRulesButton = document.getElementById('select-all-rules');
+const unselectAllRulesButton = document.getElementById('unselect-all-rules');
 
 // Bootstrap Modal
 const settingsModal = new bootstrap.Modal(document.getElementById('settingsModal'));
@@ -79,6 +81,8 @@ languageSelect.addEventListener('change', (e) => {
 });
 darkModeToggle.addEventListener('change', toggleDarkMode);
 clearLogsButton.addEventListener('click', clearLogs);
+selectAllRulesButton.addEventListener('click', selectAllRules);
+unselectAllRulesButton.addEventListener('click', unselectAllRules);
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
@@ -278,7 +282,6 @@ async function startScan() {
   lastScanDate.textContent = new Date().toLocaleDateString();
   saveSettings();
   addLog(translations[currentLanguage].scanCompleted);
-  updateStep(3);
 }
 
 function displayResults() {
@@ -379,8 +382,6 @@ function changeLanguage(lang) {
   currentLanguage = lang;
   document.getElementById('scan-button').textContent = translations[lang].scan;
   document.getElementById('clean-button').textContent = translations[lang].clean;
-  document.getElementById('select-all-results').textContent = translations[lang].selectAll;
-  document.getElementById('unselect-all-results').textContent = translations[lang].unselectAll;
   document.getElementById('select-all-rules').textContent = translations[lang].selectAll;
   document.getElementById('unselect-all-rules').textContent = translations[lang].unselectAll;
   document.querySelector('.loading p').textContent = translations[lang].loading;
@@ -427,17 +428,24 @@ async function startCleanup() {
   });
 
   if (!result.isConfirmed) {
- //   return;
+    return;
   }
+
+  // 3. adıma geç
+  updateStep(3);
 
   cleanButton.disabled = true;
   cleanButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Temizleniyor...';
-  //updateStep(3);
 
   const selectedResults = document.querySelectorAll('.result-checkbox:checked');
   const totalFiles = selectedResults.length;
   let cleanedFiles = 0;
   let totalCleanedSize = 0;
+
+  // İlerleme çubuğunu göster
+  const progressBar = document.querySelector('#cleanup-progress');
+  const progressBarInner = progressBar.querySelector('.progress-bar');
+  progressBar.classList.remove('d-none');
 
   // Temizleme başladı bildirimi
   Swal.fire({
@@ -447,10 +455,8 @@ async function startCleanup() {
     showConfirmButton: false,
     allowOutsideClick: false
   });
-  
-  for (const checkbox of selectedResults) {
-   
 
+  for (const checkbox of selectedResults) {
     const resultElement = checkbox.closest('.card');
     const result = scanResults.find(r => `result-${r.id}` === checkbox.id);
 
@@ -466,6 +472,11 @@ async function startCleanup() {
         document.getElementById('total-cleaned').textContent = formatSize(totalCleanedSize);
         document.getElementById('files-cleaned').textContent = cleanedFiles;
         
+        // İlerleme çubuğunu güncelle
+        const progress = (cleanedFiles / totalFiles) * 100;
+        progressBarInner.style.width = `${progress}%`;
+        progressBarInner.setAttribute('aria-valuenow', progress);
+        
         // Log ekle
         addLog(`${result.name} temizlendi (${formatSize(result.size)})`, 'success');
         
@@ -480,6 +491,9 @@ async function startCleanup() {
   // İşlem tamamlandı
   cleanButton.disabled = false;
   cleanButton.textContent = translations[currentLanguage].clean;
+  
+  // İlerleme çubuğunu gizle
+  progressBar.classList.add('d-none');
   
   // Son istatistikleri göster
   const spaceSaved = ((totalCleanedSize / (1024 * 1024 * 1024)) * 100).toFixed(1);
@@ -507,4 +521,24 @@ function formatSize(bytes) {
   }
 
   return `${size.toFixed(1)} ${units[unitIndex]}`;
+}
+
+function selectAllRules() {
+  const checkboxes = document.querySelectorAll('.rule-checkbox');
+  checkboxes.forEach(checkbox => {
+    checkbox.checked = true;
+    const ruleId = checkbox.id.replace('rule-', '');
+    selectedRules.add(ruleId);
+  });
+  updateCleanButton();
+}
+
+function unselectAllRules() {
+  const checkboxes = document.querySelectorAll('.rule-checkbox');
+  checkboxes.forEach(checkbox => {
+    checkbox.checked = false;
+    const ruleId = checkbox.id.replace('rule-', '');
+    selectedRules.delete(ruleId);
+  });
+  updateCleanButton();
 } 

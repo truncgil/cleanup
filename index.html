@@ -69,11 +69,12 @@
       <!-- Step 1: Rules -->
       <div id="step-1-content" class="step-content active">
         <h2 class="mb-4">Temizlenecek Klasörler</h2>
+        <div class="d-flex gap-2 mb-3">
+          <button id="select-all-rules" class="btn btn-sm btn-outline-primary">Tümünü Seç</button>
+          <button id="unselect-all-rules" class="btn btn-sm btn-outline-secondary">Tümünü Kaldır</button>
+        </div>
         <div id="rules-container" class="rules-list">
-          <div class="d-flex gap-2 mb-3">
-            <button id="select-all-rules" class="btn btn-sm btn-outline-primary">Tümünü Seç</button>
-            <button id="unselect-all-rules" class="btn btn-sm btn-outline-secondary">Tümünü Kaldır</button>
-          </div>
+          
           <div class="loading text-center py-5">
             <div class="spinner-border text-primary" role="status">
               <span class="visually-hidden">Yükleniyor...</span>
@@ -86,6 +87,9 @@
       <!-- Step 2: Scan Logs -->
       <div id="step-2-content" class="step-content">
         <h2 class="mb-4">Tarama Logları</h2>
+        <div id="results-container" class="results-list2 mb-4">
+          
+        </div>
         <div id="log-container" class="mt-4">
           <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
@@ -102,39 +106,33 @@
       <!-- Step 3: Cleanup Results -->
       <div id="step-3-content" class="step-content">
         <h2 class="mb-4">Temizleme Sonuçları</h2>
-        <div id="results-container" class="results-list">
-          <div class="d-flex gap-2 mb-3">
-            <button id="select-all-results" class="btn btn-sm btn-outline-primary">Tümünü Seç</button>
-            <button id="unselect-all-results" class="btn btn-sm btn-outline-secondary">Tümünü Kaldır</button>
-          </div>
-          <div class="cleanup-stats mb-4">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-4">
-                    <div class="stat-item">
-                      <h3 id="total-cleaned">0 MB</h3>
-                      <p class="text-muted">Toplam Temizlenen</p>
-                    </div>
+        <div id="cleanup-progress" class="progress mb-4 d-none">
+          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <div class="cleanup-stats mb-4">
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="stat-item">
+                    <h3 id="total-cleaned">0 MB</h3>
+                    <p class="text-muted">Toplam Temizlenen</p>
                   </div>
-                  <div class="col-md-4">
-                    <div class="stat-item">
-                      <h3 id="space-saved">0%</h3>
-                      <p class="text-muted">Yer Kazanıldı</p>
-                    </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="stat-item">
+                    <h3 id="space-saved">0%</h3>
+                    <p class="text-muted">Yer Kazanıldı</p>
                   </div>
-                  <div class="col-md-4">
-                    <div class="stat-item">
-                      <h3 id="files-cleaned">0</h3>
-                      <p class="text-muted">Temizlenen Dosya</p>
-                    </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="stat-item">
+                    <h3 id="files-cleaned">0</h3>
+                    <p class="text-muted">Temizlenen Dosya</p>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div id="cleanup-progress" class="progress mb-4 d-none">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
           </div>
         </div>
       </div>
@@ -193,6 +191,24 @@
           <span class="ms-auto result-size text-muted"></span>
         </div>
         <div class="text-muted small result-path"></div>
+      </div>
+    </div>
+  </template>
+
+  <template id="cleanup-result-template">
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-2">
+          <div class="cleanup-status me-2">
+            <i class="bi bi-check-circle-fill text-success"></i>
+          </div>
+          <div class="flex-grow-1">
+            <h5 class="card-title mb-0 cleanup-item-name"></h5>
+            <div class="text-muted small cleanup-item-path"></div>
+          </div>
+          <div class="cleanup-item-size text-muted"></div>
+        </div>
+        <div class="cleanup-item-details small text-muted"></div>
       </div>
     </div>
   </template>

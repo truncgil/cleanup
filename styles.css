@@ -614,10 +614,15 @@ body.dark-mode .wizard-step.completed .wizard-step-icon {
 /* Step Content */
 .step-content {
   display: none;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .step-content.active {
   display: block;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Cleanup Stats */
@@ -704,4 +709,39 @@ body.dark-mode .btn-outline-secondary {
 body.dark-mode .btn-outline-secondary:hover {
   background-color: #6c757d;
   color: #ffffff;
+}
+
+.cleanup-status i {
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+}
+
+.cleanup-status i.bi-check-circle-fill {
+  color: #198754;
+}
+
+.cleanup-status i.bi-x-circle-fill {
+  color: #dc3545;
+}
+
+.cleanup-status i.bi-exclamation-circle-fill {
+  color: #ffc107;
+}
+
+.cleanup-item-details {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+#cleanup-progress {
+  transition: opacity 0.3s ease;
+}
+
+#cleanup-progress.d-none {
+  opacity: 0;
+}
+
+#cleanup-progress:not(.d-none) {
+  opacity: 1;
 } 
