@@ -223,4 +223,71 @@ button {
   text-align: center;
   padding: 20px;
   color: #666;
+}
+
+/* Material benzeri stepper */
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 16px 0 8px 0;
+}
+.step {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--secondary-color);
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+  border: 2px solid var(--primary-color);
+  transition: background 0.2s, color 0.2s;
+}
+.step.active {
+  background: var(--primary-color);
+  color: #fff;
+}
+.step-line {
+  width: 40px;
+  height: 2px;
+  background: var(--primary-color);
+  margin: 0 4px;
+  border-radius: 1px;
+}
+
+/* Mini button ve select bar */
+.select-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  align-items: center;
+}
+.mini-button {
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.mini-button:hover {
+  background: #005fa3;
+}
+
+.logo-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+.logo-bar img {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px var(--shadow-color);
 } 

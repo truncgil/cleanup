@@ -9,11 +9,21 @@
 <body>
   <div class="app-container">
     <header class="app-header">
+      <div class="logo-bar">
+        <img id="app-logo" src="assets/cleantr.svg" alt="Cleantr Logo" width="48" height="48" />
+      </div>
       <div class="title-bar">
         <h1>Cleantr</h1>
         <div class="controls">
           <button id="settings-button" class="icon-button">⚙️</button>
         </div>
+      </div>
+      <div class="stepper">
+        <div class="step" id="step-1">1</div>
+        <div class="step-line"></div>
+        <div class="step" id="step-2">2</div>
+        <div class="step-line"></div>
+        <div class="step" id="step-3">3</div>
       </div>
       <div class="action-bar">
         <button id="scan-button" class="primary-button">Tara</button>
@@ -25,11 +35,19 @@
 
     <main class="content">
       <div id="rules-container" class="rules-list">
+        <div class="select-bar">
+          <button id="select-all-rules" class="mini-button">Tümünü Seç</button>
+          <button id="unselect-all-rules" class="mini-button">Tümünü Kaldır</button>
+        </div>
         <!-- Kurallar buraya yüklenecek -->
         <div class="loading">Yükleniyor...</div>
       </div>
 
       <div id="results-container" class="results-list hidden">
+        <div class="select-bar">
+          <button id="select-all-results" class="mini-button">Tümünü Seç</button>
+          <button id="unselect-all-results" class="mini-button">Tümünü Kaldır</button>
+        </div>
         <!-- Sonuçlar buraya yüklenecek -->
       </div>
     </main>

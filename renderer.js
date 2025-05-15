@@ -20,16 +20,58 @@ let currentRules = [];
 let scanResults = [];
 let currentLanguage = 'tr';
 let isScanning = false; // Tarama durumu
+let currentStep = 1; // 1: Tara, 2: Önizle, 3: Temizle
+
+// Stepper aktif adım vurgusu
+function updateStepper() {
+  for (let i = 1; i <= 3; i++) {
+    const stepEl = document.getElementById(`step-${i}`);
+    if (stepEl) {
+      if (i === currentStep) {
+        stepEl.classList.add('active');
+      } else {
+        stepEl.classList.remove('active');
+      }
+    }
+  }
+}
+
+// Adım arayüzlerini güncelle (güncellendi)
+function updateStepUI() {
+  updateStepper();
+  updateLogoForTheme();
+  if (currentStep === 1) {
+    rulesContainer.classList.remove('hidden');
+    resultsContainer.classList.add('hidden');
+    scanButton.classList.remove('hidden');
+    cleanButton.classList.add('hidden');
+    scanButton.textContent = 'Tara';
+    totalSizeEl.textContent = '';
+  } else if (currentStep === 2) {
+    rulesContainer.classList.add('hidden');
+    resultsContainer.classList.remove('hidden');
+    scanButton.classList.add('hidden');
+    cleanButton.classList.remove('hidden');
+    cleanButton.textContent = 'Temizle';
+  } else if (currentStep === 3) {
+    rulesContainer.classList.add('hidden');
+    resultsContainer.classList.add('hidden');
+    scanButton.classList.add('hidden');
+    cleanButton.classList.add('hidden');
+    totalSizeEl.textContent = 'Temizlik tamamlandı!';
+    setTimeout(() => {
+      currentStep = 1;
+      updateStepUI();
+    }, 2000);
+  }
+}
 
 // Sayfa Yükleme
 document.addEventListener('DOMContentLoaded', async () => {
   await loadSettings();
   await loadRules();
-  
-  // Tarama butonu tıklama
+  updateStepUI();
   scanButton.addEventListener('click', startScan);
-  
-  // Temizleme butonu tıklama
   cleanButton.addEventListener('click', startClean);
   
   // Ayarlar butonu tıklama
@@ -55,7 +97,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     const settings = await window.api.getSettings();
     settings.darkMode = isDarkMode;
     await window.api.saveSettings(settings);
+    updateLogoForTheme();
   });
+  
+  // Toplu seçim butonları
+  document.getElementById('select-all-rules').addEventListener('click', selectAllRules);
+  document.getElementById('unselect-all-rules').addEventListener('click', unselectAllRules);
+  document.getElementById('select-all-results').addEventListener('click', selectAllResults);
+  document.getElementById('unselect-all-results').addEventListener('click', unselectAllResults);
 });
 
 // Ayarları Yükle
@@ -113,29 +162,31 @@ function renderRules() {
   });
 }
 
-// Taramayı Başlat
+// Taramayı Başlat (Wizard 1. adım)
 async function startScan() {
-  // Eğer zaten tarama yapılıyorsa, işlemi tekrarlama
   if (isScanning) return;
-  
   isScanning = true;
   scanButton.disabled = true;
   cleanButton.disabled = true;
-  
-  // UI Değişiklikleri
-  rulesContainer.classList.add('hidden');
-  resultsContainer.classList.remove('hidden');
-  resultsContainer.innerHTML = '<div class="loading">Taranıyor...</div>';
-  
+  totalSizeEl.textContent = '';
+  scanResults = [];
+  resultsContainer.classList.add('hidden');
+  rulesContainer.classList.remove('hidden');
   try {
     const selectedRules = currentRules.filter(rule => rule.selected);
-    
-    // Önceki sonuçları temizle
-    scanResults = [];
-    
-    // Yeni tarama yap
+    if (selectedRules.length === 0) {
+      alert('Lütfen en az bir klasör seçin.');
+      isScanning = false;
+      scanButton.disabled = false;
+      return;
+    }
+    rulesContainer.classList.add('hidden');
+    resultsContainer.classList.remove('hidden');
+    resultsContainer.innerHTML = '<div class="loading">Taranıyor...";</div>';
     scanResults = await window.api.scanDirectories(selectedRules);
     renderResults();
+    currentStep = 2;
+    updateStepUI();
   } catch (error) {
     console.error('Tarama hatası:', error);
     resultsContainer.innerHTML = '<div class="error">Tarama başarısız oldu!</div>';
@@ -147,10 +198,10 @@ async function startScan() {
 
 // Sonuçları Render Et
 function renderResults() {
-  // Sonuç konteynerini tamamen temizle
+  // Sonuçları göstermeden önce içeriği tamamen temizle
   resultsContainer.innerHTML = '';
   
-  if (scanResults.length === 0) {
+  if (!scanResults || scanResults.length === 0) {
     resultsContainer.innerHTML = '<div class="no-results">Temizlenecek bir şey bulunamadı.</div>';
     cleanButton.disabled = true;
     return;
@@ -158,6 +209,7 @@ function renderResults() {
   
   let totalSize = 0;
   
+  // Her sonuç için bir öğe oluştur
   scanResults.forEach(result => {
     const resultEl = document.importNode(resultTemplate.content, true);
     
@@ -172,48 +224,45 @@ function renderResults() {
     resultEl.querySelector('.result-path').textContent = result.path;
     
     // Boyut formatı
-    const size = result.size;
+    const size = result.size || 0;
     resultEl.querySelector('.result-size').textContent = formatSize(size);
     
     totalSize += size;
+    
+    // Sonuç öğesini listenin sonuna ekle
     resultsContainer.appendChild(resultEl);
   });
   
+  // Toplam boyutu güncelle
   totalSizeEl.textContent = `Toplam: ${formatSize(totalSize)}`;
   cleanButton.disabled = false;
 }
 
-// Temizlemeyi Başlat
+// Temizlemeyi Başlat (Wizard 2. adım)
 async function startClean() {
   if (!confirm('Seçili öğeleri temizlemek istediğinizden emin misiniz?')) {
     return;
   }
-  
   cleanButton.disabled = true;
-  
+  scanButton.disabled = true;
   try {
-    const selectedPaths = scanResults
-      .filter(result => result.selected)
-      .map(result => result.path);
-    
+    const selectedPaths = scanResults.filter(result => result.selected).map(result => result.path);
     if (selectedPaths.length === 0) {
       alert('Temizlenecek bir şey seçmediniz!');
       cleanButton.disabled = false;
+      scanButton.disabled = false;
       return;
     }
-    
     const results = await window.api.cleanDirectories(selectedPaths);
     const successCount = results.filter(r => r.success).length;
-    
     alert(`${successCount} öğe başarıyla temizlendi!`);
-    
-    // Temizlik sonrası yeniden tarama
-    await startScan();
+    currentStep = 3;
+    updateStepUI();
   } catch (error) {
     console.error('Temizleme hatası:', error);
     alert('Temizleme sırasında bir hata oluştu!');
-  } finally {
     cleanButton.disabled = false;
+    scanButton.disabled = false;
   }
 }
 
@@ -260,5 +309,33 @@ function updateUILanguage() {
     document.querySelector('label[for="language-select"]').textContent = 'Language';
     document.querySelector('label[for="dark-mode"]').textContent = 'Dark Mode';
     document.querySelector('.last-scan-info span:first-child').textContent = 'Last Scan: ';
+  }
+  updateLogoForTheme();
+}
+
+// Toplu seçim fonksiyonları
+function selectAllRules() {
+  currentRules.forEach(rule => rule.selected = true);
+  renderRules();
+}
+function unselectAllRules() {
+  currentRules.forEach(rule => rule.selected = false);
+  renderRules();
+}
+function selectAllResults() {
+  scanResults.forEach(result => result.selected = true);
+  renderResults();
+}
+function unselectAllResults() {
+  scanResults.forEach(result => result.selected = false);
+  renderResults();
+}
+
+function updateLogoForTheme() {
+  const logo = document.getElementById('app-logo');
+  if (document.body.classList.contains('dark-mode')) {
+    logo.src = 'assets/cleantr-dark.svg';
+  } else {
+    logo.src = 'assets/cleantr.svg';
   }
 } 

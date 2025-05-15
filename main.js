@@ -22,7 +22,8 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js')
     },
     titleBarStyle: 'hiddenInset',
-    backgroundColor: '#f5f5f5'
+    backgroundColor: '#f5f5f5',
+    icon: path.join(__dirname, 'assets', 'icon.png')
   });
 
   mainWindow.loadFile('index.html');
