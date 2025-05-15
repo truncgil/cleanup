@@ -4,103 +4,131 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cleantr - macOS Temizleme Aracı</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-  <div class="app-container">
-    <header class="app-header">
-      <div class="logo-bar">
-        <img id="app-logo" src="assets/cleantr.svg" alt="Cleantr Logo" width="48" height="48" />
-      </div>
-      <div class="title-bar">
-        <h1>Cleantr</h1>
-        <div class="controls">
-          <button id="settings-button" class="icon-button">⚙️</button>
+<body class="bg-light">
+  <div class="container-fluid p-0">
+    <header class="bg-white shadow-sm">
+      <div class="container py-3">
+        <div class="row align-items-center">
+          <div class="col-auto">
+            <img id="app-logo" src="assets/cleantr.svg" alt="Cleantr Logo" />
+          </div>
+          <div class="col">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="stepper d-flex align-items-center">
+                <div class="step active" id="step-1">1</div>
+                <div class="step-line"></div>
+                <div class="step" id="step-2">2</div>
+                <div class="step-line"></div>
+                <div class="step" id="step-3">3</div>
+              </div>
+              <button id="settings-button" class="btn btn-link text-dark">
+                <i class="bi bi-gear-fill"></i>
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="stepper">
-        <div class="step" id="step-1">1</div>
-        <div class="step-line"></div>
-        <div class="step" id="step-2">2</div>
-        <div class="step-line"></div>
-        <div class="step" id="step-3">3</div>
-      </div>
-      <div class="action-bar">
-        <button id="scan-button" class="primary-button">Tara</button>
-        <button id="clean-button" class="secondary-button" disabled>Temizle</button>
-        <div class="spacer"></div>
-        <span id="total-size"></span>
+        <div class="row mt-3">
+          <div class="col">
+            <div class="d-flex gap-2">
+              <button id="scan-button" class="btn btn-primary">Tara</button>
+              <button id="clean-button" class="btn btn-secondary" disabled>Temizle</button>
+              <div class="ms-auto">
+                <span id="total-size" class="text-muted"></span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </header>
 
-    <main class="content">
-      <div id="rules-container" class="rules-list">
-        <div class="select-bar">
-          <button id="select-all-rules" class="mini-button">Tümünü Seç</button>
-          <button id="unselect-all-rules" class="mini-button">Tümünü Kaldır</button>
-        </div>
-        <!-- Kurallar buraya yüklenecek -->
-        <div class="loading">Yükleniyor...</div>
-      </div>
-
-      <div id="results-container" class="results-list hidden">
-        <div class="select-bar">
-          <button id="select-all-results" class="mini-button">Tümünü Seç</button>
-          <button id="unselect-all-results" class="mini-button">Tümünü Kaldır</button>
+    <main class="container py-4">
+      <div id="results-container" class="results-list d-none">
+        <div class="d-flex gap-2 mb-3">
+          <button id="select-all-results" class="btn btn-sm btn-outline-primary">Tümünü Seç</button>
+          <button id="unselect-all-results" class="btn btn-sm btn-outline-secondary">Tümünü Kaldır</button>
         </div>
         <!-- Sonuçlar buraya yüklenecek -->
       </div>
+
+      <div id="rules-container" class="rules-list">
+        <div class="d-flex gap-2 mb-3">
+          <button id="select-all-rules" class="btn btn-sm btn-outline-primary">Tümünü Seç</button>
+          <button id="unselect-all-rules" class="btn btn-sm btn-outline-secondary">Tümünü Kaldır</button>
+        </div>
+        <div class="loading text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Yükleniyor...</span>
+          </div>
+          <p class="mt-2">Yükleniyor...</p>
+        </div>
+      </div>
     </main>
 
-    <div id="settings-panel" class="settings-panel hidden">
-      <div class="settings-header">
-        <h2>Ayarlar</h2>
-        <button id="close-settings" class="icon-button">✕</button>
-      </div>
-      <div class="settings-content">
-        <div class="setting-item">
-          <label for="language-select">Dil</label>
-          <select id="language-select">
-            <option value="tr">Türkçe</option>
-            <option value="en">English</option>
-          </select>
-        </div>
-        <div class="setting-item">
-          <label for="dark-mode">Koyu Tema</label>
-          <input type="checkbox" id="dark-mode">
-        </div>
-        <div class="setting-item last-scan-info">
-          <span>Son Tarama: </span>
-          <span id="last-scan-date">Hiç</span>
+    <!-- Settings Modal -->
+    <div class="modal fade" id="settingsModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Ayarlar</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="language-select" class="form-label">Dil</label>
+              <select id="language-select" class="form-select">
+                <option value="tr">Türkçe</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="dark-mode">
+              <label class="form-check-label" for="dark-mode">Koyu Tema</label>
+            </div>
+            <div class="text-muted">
+              <small>Son Tarama: <span id="last-scan-date">Hiç</span></small>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <template id="rule-template">
-    <div class="rule-item">
-      <div class="rule-header">
-        <input type="checkbox" class="rule-checkbox">
-        <h3 class="rule-name"></h3>
-      </div>
-      <div class="rule-details">
-        <div class="rule-path"></div>
-        <div class="rule-description"></div>
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-2">
+          <input type="checkbox" class="form-check-input me-2 rule-checkbox">
+          <h5 class="card-title mb-0 rule-name"></h5>
+        </div>
+        <div class="rule-details">
+          <div class="text-muted small rule-path"></div>
+          <div class="mt-2 rule-description"></div>
+        </div>
       </div>
     </div>
   </template>
 
   <template id="result-template">
-    <div class="result-item">
-      <div class="result-header">
-        <input type="checkbox" class="result-checkbox">
-        <h3 class="result-name"></h3>
-        <span class="result-size"></span>
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-2">
+          <input type="checkbox" class="form-check-input me-2 result-checkbox">
+          <h5 class="card-title mb-0 result-name"></h5>
+          <span class="ms-auto result-size text-muted"></span>
+        </div>
+        <div class="text-muted small result-path"></div>
       </div>
-      <div class="result-path"></div>
     </div>
   </template>
 
+  <!-- Bootstrap 5 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="renderer.js"></script>
 </body>
 </html> 

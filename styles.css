@@ -186,8 +186,8 @@ button {
 /* Settings Panel */
 .settings-panel {
   position: absolute;
-  top: 60px;
-  right: 20px;
+  top: 160px;
+  left: 20px;
   width: 300px;
   background-color: var(--secondary-color);
   border-radius: 8px;
@@ -225,58 +225,157 @@ button {
   color: #666;
 }
 
-/* Material benzeri stepper */
+/* Stepper Styles */
 .stepper {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin: 16px 0 8px 0;
+  gap: 1rem;
 }
+
 .step {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--secondary-color);
-  color: var(--primary-color);
+  background-color: #e9ecef;
+  color: #6c757d;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
-  font-size: 18px;
-  border: 2px solid var(--primary-color);
-  transition: background 0.2s, color 0.2s;
-}
-.step.active {
-  background: var(--primary-color);
-  color: #fff;
-}
-.step-line {
-  width: 40px;
-  height: 2px;
-  background: var(--primary-color);
-  margin: 0 4px;
-  border-radius: 1px;
+  font-weight: 600;
+  z-index: 1;
 }
 
-/* Mini button ve select bar */
-.select-bar {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 8px;
-  align-items: center;
+.step.active {
+  background-color: #0d6efd;
+  color: white;
 }
-.mini-button {
-  background: var(--primary-color);
-  color: #fff;
-  border: none;
+
+.step-line {
+  flex: 1;
+  height: 2px;
+  background-color: #e9ecef;
+  position: relative;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
   border-radius: 4px;
-  padding: 4px 12px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background 0.2s;
 }
-.mini-button:hover {
-  background: #005fa3;
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+  background-color: #212529;
+  color: #f8f9fa;
+}
+
+body.dark-mode .bg-white {
+  background-color: #343a40 !important;
+}
+
+body.dark-mode .card {
+  background-color: #343a40;
+  border-color: #495057;
+}
+
+body.dark-mode .text-muted {
+  color: #adb5bd !important;
+}
+
+body.dark-mode .form-check-input {
+  background-color: #495057;
+  border-color: #6c757d;
+}
+
+body.dark-mode .form-check-input:checked {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+/* Loading Animation */
+.loading {
+  opacity: 0.7;
+}
+
+/* Custom Card Styles */
+.card {
+  transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+/* Custom Button Styles */
+.btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+  background-color: #5c636a;
+  border-color: #565e64;
+}
+
+/* Modal Customization */
+.modal-content {
+  border-radius: 0.5rem;
+}
+
+.modal-header {
+  border-bottom: 1px solid #dee2e6;
+}
+
+.modal-footer {
+  border-top: 1px solid #dee2e6;
+}
+
+/* Form Controls */
+.form-select:focus,
+.form-check-input:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .stepper {
+    gap: 0.5rem;
+  }
+  
+  .step {
+    width: 24px;
+    height: 24px;
+    font-size: 0.875rem;
+  }
+  
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }
 
 .logo-bar {
