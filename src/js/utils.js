@@ -1,4 +1,4 @@
-import { cleanButton } from './dom.js';
+import { cleanButton, scanButton } from './dom.js';
 
 export function formatSize(bytes) {
   const units = ['B', 'KB', 'MB', 'GB', 'TB'];
@@ -35,9 +35,32 @@ export function updateStep(step) {
       el.classList.remove('active');
     }
   });
+  
+  // Butonları adıma göre güncelle
+  if (step === 1) {
+    scanButton.classList.remove('d-none');
+    cleanButton.classList.add('d-none');
+  } else if (step === 2) {
+    scanButton.classList.add('d-none');
+    cleanButton.classList.remove('d-none');
+    updateCleanButton();
+  } else if (step === 3) {
+    scanButton.classList.add('d-none');
+    cleanButton.classList.add('d-none');
+  }
 }
 
 export function updateCleanButton() {
   const hasSelectedResults = document.querySelectorAll('.result-checkbox:checked').length > 0;
-  document.getElementById('clean-button').disabled = !hasSelectedResults;
+  const cleanBtn = document.getElementById('clean-button');
+  
+  if (hasSelectedResults) {
+    cleanBtn.classList.remove('btn-outline-primary');
+    cleanBtn.classList.add('btn-primary');
+    cleanBtn.disabled = false;
+  } else {
+    cleanBtn.classList.remove('btn-primary');
+    cleanBtn.classList.add('btn-outline-primary');
+    cleanBtn.disabled = false; // Butonu aktif bırakıyoruz, tıklanınca uyarı vereceğiz
+  }
 } 

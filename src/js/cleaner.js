@@ -4,6 +4,18 @@ import { addLog } from './logger.js';
 import { updateStep, formatSize } from './utils.js';
 
 export async function startCleanup() {
+  // Seçili öğeleri kontrol et
+  const selectedResults = document.querySelectorAll('.result-checkbox:checked');
+  if (selectedResults.length === 0) {
+    await Swal.fire({
+      title: 'Uyarı',
+      text: 'Temizlenecek hiçbir öğe seçilmedi!',
+      icon: 'warning',
+      confirmButtonText: 'Tamam'
+    });
+    return;
+  }
+
   const result = await Swal.fire({
     title: 'Onay',
     text: 'Seçili dosyaları silmek istediğinizden emin misiniz?',
@@ -23,7 +35,6 @@ export async function startCleanup() {
   cleanButton.disabled = true;
   cleanButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Temizleniyor...';
 
-  const selectedResults = document.querySelectorAll('.result-checkbox:checked');
   const totalFiles = selectedResults.length;
   let cleanedFiles = 0;
   let totalCleanedSize = 0;

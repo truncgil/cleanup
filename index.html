@@ -55,8 +55,6 @@
         <div class="row mt-3">
           <div class="col">
             <div class="d-flex gap-2">
-              <button id="scan-button" class="btn btn-primary">Tara</button>
-              <button id="clean-button" class="btn btn-secondary" disabled>Temizle</button>
               <div class="ms-auto">
                 <span id="total-size" class="text-muted"></span>
               </div>
@@ -173,6 +171,12 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Fixed Bottom Action Buttons -->
+    <div class="fixed-bottom d-flex justify-content-center pb-4" id="fixed-action-buttons">
+      <button id="scan-button"  class="btn btn-lg btn-primary mx-2 d-none"><i class="bi bi-search fs-2"></i> <span id="scan-button-text">Tara</span></button>
+      <button id="clean-button" class="btn btn-lg btn-primary mx-2 d-none"><i class="bi bi-trash fs-2"></i> <span id="clean-button-text">Temizle</span></button>
     </div>
   </div>
 

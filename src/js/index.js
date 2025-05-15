@@ -25,6 +25,9 @@ import { startScan, loadScanConfig } from './scanner.js';
 // Cleaner
 import { startCleanup } from './cleaner.js';
 
+// Utils
+import { updateStep } from './utils.js';
+
 // Logger
 import { clearLogs } from './logger.js';
 
@@ -48,10 +51,16 @@ unselectAllRulesButton.addEventListener('click', unselectAllRules);
 selectAllResultsButton.addEventListener('click', selectAllResults);
 unselectAllResultsButton.addEventListener('click', unselectAllResults);
 
+// Wizard steps handling
+function updateWizardSteps() {
+  updateStep(1);
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
   loadSettings();
   await loadScanConfig();
   loadRules();
   changeLanguage('tr');
+  updateWizardSteps();
 }); 

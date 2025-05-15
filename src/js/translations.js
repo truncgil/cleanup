@@ -43,8 +43,8 @@ export let currentLanguage = 'tr';
 
 export function changeLanguage(lang) {
   currentLanguage = lang;
-  document.getElementById('scan-button').textContent = translations[lang].scan;
-  document.getElementById('clean-button').textContent = translations[lang].clean;
+  document.getElementById('scan-button-text').textContent = translations[lang].scan;
+  document.getElementById('clean-button-text').textContent = translations[lang].clean;
   document.getElementById('select-all-rules').textContent = translations[lang].selectAll;
   document.getElementById('unselect-all-rules').textContent = translations[lang].unselectAll;
   document.querySelector('.loading p').textContent = translations[lang].loading;

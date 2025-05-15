@@ -745,3 +745,9 @@ body.dark-mode .btn-outline-secondary:hover {
 #cleanup-progress:not(.d-none) {
   opacity: 1;
 } 
+
+#fixed-action-buttons button {
+  border-radius: 100% !important;
+  width: 100px;
+  height: 100px;
+}
