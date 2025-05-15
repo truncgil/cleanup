@@ -225,6 +225,13 @@ async function startScan() {
     return;
   }
 
+  // Seçili kuralları kontrol et
+  const selectedRuleCheckboxes = document.querySelectorAll('.rule-checkbox:checked');
+  if (selectedRuleCheckboxes.length === 0) {
+    addLog('Lütfen en az bir kural seçin.');
+    return;
+  }
+
   scanButton.disabled = true;
   scanButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Tara...';
   logContainer.classList.remove('d-none');
@@ -233,9 +240,13 @@ async function startScan() {
   
   scanResults = [];
   
-  for (const folder of scanConfig.scanFolders) {
-    if (!folder.enabled) {
-      addLog(`${folder.name} klasörü devre dışı bırakıldı, atlanıyor...`);
+  // Sadece seçili kuralları tara
+  for (const checkbox of selectedRuleCheckboxes) {
+    const ruleId = checkbox.id.replace('rule-', '');
+    const folder = scanConfig.scanFolders.find(f => f.id === ruleId);
+    
+    if (!folder) {
+      addLog(`HATA: ${ruleId} ID'li kural bulunamadı`);
       continue;
     }
 
@@ -322,90 +333,41 @@ function updateStep(step) {
   });
 }
 
-// Temizleme işlemi
-async function startCleanup() {
-  if (!confirm('Seçili dosyaları silmek istediğinizden emin misiniz?')) {
-    return;
-  }
-
-  cleanButton.disabled = true;
-  cleanButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Temizleniyor...';
-  updateStep(3);
-
-  const progressBar = document.querySelector('#cleanup-progress');
-  const progressBarInner = progressBar.querySelector('.progress-bar');
-  progressBar.classList.remove('d-none');
-
-  const selectedResults = document.querySelectorAll('.result-checkbox:checked');
-  const totalFiles = selectedResults.length;
-  let cleanedFiles = 0;
-  let totalCleanedSize = 0;
-
-  for (const checkbox of selectedResults) {
-    const resultElement = checkbox.closest('.card');
-    const result = scanResults.find(r => `result-${r.id}` === checkbox.id);
-    
-    if (result) {
-      try {
-        // Burada gerçek silme işlemi yapılacak
-        await new Promise(resolve => setTimeout(resolve, 500)); // Simülasyon
-        
-        totalCleanedSize += result.size;
-        cleanedFiles++;
-        
-        // Progress bar güncelleme
-        const progress = (cleanedFiles / totalFiles) * 100;
-        progressBarInner.style.width = `${progress}%`;
-        
-        // İstatistikleri güncelle
-        document.getElementById('total-cleaned').textContent = formatSize(totalCleanedSize);
-        document.getElementById('files-cleaned').textContent = cleanedFiles;
-        
-        // Log ekle
-        addLog(`${result.name} temizlendi (${formatSize(result.size)})`);
-        
-        // Kartı kaldır
-        resultElement.remove();
-      } catch (error) {
-        addLog(`HATA: ${result.name} temizlenirken hata: ${error.message}`);
-      }
-    }
-  }
-
-  // İşlem tamamlandı
-  cleanButton.disabled = false;
-  cleanButton.textContent = translations[currentLanguage].clean;
-  progressBar.classList.add('d-none');
-  
-  // Son istatistikleri göster
-  const spaceSaved = ((totalCleanedSize / (1024 * 1024 * 1024)) * 100).toFixed(1);
-  document.getElementById('space-saved').textContent = `${spaceSaved}%`;
-  
-  addLog(`Temizleme tamamlandı. Toplam ${formatSize(totalCleanedSize)} temizlendi.`);
-}
-
-function formatSize(bytes) {
-  const units = ['B', 'KB', 'MB', 'GB', 'TB'];
-  let size = bytes;
-  let unitIndex = 0;
-
-  while (size >= 1024 && unitIndex < units.length - 1) {
-    size /= 1024;
-    unitIndex++;
-  }
-
-  return `${size.toFixed(1)} ${units[unitIndex]}`;
-}
-
 // Log işlevleri
-function addLog(message) {
+let currentToast = null;
+
+async function addLog(message, type = 'info') {
   const timestamp = new Date().toLocaleTimeString();
-  const logEntry = `[${timestamp}] ${message}\n`;
-  logContent.textContent += logEntry;
+  const logEntry = `[${timestamp}] ${message}`;
+  
+  // Log içeriğini güncelle
+  logContent.textContent += logEntry + '\n';
   logContent.scrollTop = logContent.scrollHeight;
   
   // Log container'ı görünür yap
   logContainer.classList.remove('d-none');
+
+  // SweetAlert2 toast göster
+  if (currentToast) {
+    await currentToast.close();
+  }
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'bottom-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer)
+      toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+  });
+
+  currentToast = Toast.fire({
+    icon: type,
+    title: logEntry
+  });
 }
 
 function clearLogs() {
@@ -451,4 +413,98 @@ function changeLanguage(lang) {
   document.querySelector('#total-cleaned + p').textContent = stats[lang].totalCleaned;
   document.querySelector('#space-saved + p').textContent = stats[lang].spaceSaved;
   document.querySelector('#files-cleaned + p').textContent = stats[lang].filesCleaned;
+}
+
+// Temizleme işlemi
+async function startCleanup() {
+  const result = await Swal.fire({
+    title: 'Onay',
+    text: 'Seçili dosyaları silmek istediğinizden emin misiniz?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Evet',
+    cancelButtonText: 'İptal'
+  });
+
+  if (!result.isConfirmed) {
+ //   return;
+  }
+
+  cleanButton.disabled = true;
+  cleanButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Temizleniyor...';
+  //updateStep(3);
+
+  const selectedResults = document.querySelectorAll('.result-checkbox:checked');
+  const totalFiles = selectedResults.length;
+  let cleanedFiles = 0;
+  let totalCleanedSize = 0;
+
+  // Temizleme başladı bildirimi
+  Swal.fire({
+    title: 'Temizleme Başladı',
+    html: 'Seçili dosyalar temizleniyor...',
+    icon: 'info',
+    showConfirmButton: false,
+    allowOutsideClick: false
+  });
+  
+  for (const checkbox of selectedResults) {
+   
+
+    const resultElement = checkbox.closest('.card');
+    const result = scanResults.find(r => `result-${r.id}` === checkbox.id);
+
+    if (result) {
+      try {
+        // Burada gerçek silme işlemi yapılacak
+        await new Promise(resolve => setTimeout(resolve, 500)); // Simülasyon
+        
+        totalCleanedSize += result.size;
+        cleanedFiles++;
+      
+        // İstatistikleri güncelle
+        document.getElementById('total-cleaned').textContent = formatSize(totalCleanedSize);
+        document.getElementById('files-cleaned').textContent = cleanedFiles;
+        
+        // Log ekle
+        addLog(`${result.name} temizlendi (${formatSize(result.size)})`, 'success');
+        
+        // Kartı kaldır
+        resultElement.remove();
+      } catch (error) {
+        addLog(`HATA: ${result.name} temizlenirken hata: ${error.message}`, 'error');
+      }
+    }
+  }
+
+  // İşlem tamamlandı
+  cleanButton.disabled = false;
+  cleanButton.textContent = translations[currentLanguage].clean;
+  
+  // Son istatistikleri göster
+  const spaceSaved = ((totalCleanedSize / (1024 * 1024 * 1024)) * 100).toFixed(1);
+  document.getElementById('space-saved').textContent = `${spaceSaved}%`;
+  
+  // Temizleme tamamlandı bildirimi
+  await Swal.fire({
+    title: 'Temizleme Tamamlandı',
+    html: `Toplam ${formatSize(totalCleanedSize)} temizlendi.<br>${cleanedFiles} dosya işlendi.`,
+    icon: 'success',
+    confirmButtonText: 'Tamam'
+  });
+
+  addLog(`Temizleme tamamlandı. Toplam ${formatSize(totalCleanedSize)} temizlendi.`, 'success');
+}
+
+function formatSize(bytes) {
+  const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+  let size = bytes;
+  let unitIndex = 0;
+
+  while (size >= 1024 && unitIndex < units.length - 1) {
+    size /= 1024;
+    unitIndex++;
+  }
+
+  return `${size.toFixed(1)} ${units[unitIndex]}`;
 } 

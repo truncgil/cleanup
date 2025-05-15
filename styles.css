@@ -521,13 +521,13 @@ body.dark-mode .alert-danger {
   justify-content: space-between;
   align-items: center;
   position: relative;
-  margin-bottom: 1rem;
+  margin-bottom: -1rem;
 }
 
 .wizard-steps::before {
   content: '';
   position: absolute;
-  top: 50%;
+  top: 31%;
   left: 0;
   right: 0;
   height: 2px;
