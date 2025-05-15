@@ -1,50 +1,75 @@
 # Cleantr Scan Rules File
-# Defines which folders Cleantr will scan and what they are used for.
+# Used by Cleantr (Electron-based macOS cleanup app for developers)
+# These rules define which folders are scanned and what they contain.
 
 [xcode_derived_data]
 name=Derived Data
 path=~/Library/Developer/Xcode/DerivedData
-description.en=Temporary build data created by Xcode. Safe to delete.
-description.tr=Xcode tarafından oluşturulan geçici derleme verileri. Silinmesinde sakınca yok.
+description.en=Temporary build files created by Xcode. Safe to delete.
+description.tr=Xcode tarafından oluşturulan geçici derleme dosyaları. Güvenle silinebilir.
 
 [xcode_archives]
 name=Archives
 path=~/Library/Developer/Xcode/Archives
-description.en=Archived builds from Xcode. Delete if you don't need past build history.
-description.tr=Xcode arşivlenmiş derleme dosyaları. Geçmiş derlemelere ihtiyaç duymuyorsan silebilirsin.
+description.en=Build archives created by Xcode. Delete if you don't need past builds.
+description.tr=Xcode tarafından oluşturulan derleme arşivleri. Geçmiş derlemelere ihtiyaç duymuyorsanız silin.
 
 [xcode_device_support]
 name=Device Support
 path=~/Library/Developer/Xcode/iOS DeviceSupport
-description.en=Old device support files. Deleting them can save space.
-description.tr=Eski cihaz destek dosyaları. Silmek yer açar.
+description.en=Device debug support files. Usually for old iOS versions.
+description.tr=Cihaz hata ayıklama destek dosyaları. Genellikle eski iOS sürümleri içindir.
 
-[flutter_builds]
-name=Flutter Build
+[simulators]
+name=iOS Simulators
+path=~/Library/Developer/CoreSimulator/Devices
+description.en=Simulator files, apps and data. Recreated when needed.
+description.tr=Simülatör dosyaları, uygulamalar ve veriler. Gerektiğinde yeniden oluşturulur.
+
+[flutter_build]
+name=Flutter Build Outputs
 path=build/
-description.en=Build outputs of Flutter projects. Can be deleted if not needed.
-description.tr=Flutter projelerinin derleme çıktıları. Gerekli değilse silinebilir.
+description.en=Build outputs from Flutter projects. Can be deleted safely.
+description.tr=Flutter projelerinden oluşan build çıktıları. Güvenle silinebilir.
 
 [android_avd]
 name=Android Emulators (AVD)
 path=~/.android/avd
-description.en=Emulator images. Deleting will remove Android virtual devices.
-description.tr=Android emülatör görüntüleri. Silmek emülatörleri kaldırır.
+description.en=Android virtual device images and data. Can be large in size.
+description.tr=Android sanal cihaz imajları ve verileri. Genellikle büyük boyutludur.
 
 [android_gradle_cache]
-name=Gradle Cache
+name=Gradle Caches
 path=~/.gradle/caches
-description.en=Gradle download cache. Will be re-downloaded if deleted.
-description.tr=Gradle indirme önbelleği. Silinirse tekrar indirilecektir.
+description.en=Gradle build/download cache. Will be regenerated.
+description.tr=Gradle build/indirme önbelleği. Gerektiğinde yeniden oluşturulur.
+
+[android_studio_log]
+name=Android Studio Logs
+path=~/Library/Logs/Google/AndroidStudio*
+description.en=Log files from Android Studio. Safe to delete.
+description.tr=Android Studio log dosyaları. Silinmesi güvenlidir.
 
 [adobe_temp]
 name=Adobe Temp Files
 path=/System/Volumes/Data/.adobeTemp
-description.en=Adobe's temporary files. Often large and safe to remove.
-description.tr=Adobe geçici dosyaları. Genellikle büyük boyutludur ve silinmesi güvenlidir.
+description.en=Temporary files used by Adobe apps like Photoshop or Premiere.
+description.tr=Photoshop veya Premiere gibi Adobe uygulamalarının geçici dosyaları.
 
 [system_temp]
-name=macOS Temp Files
+name=System Temp Files
 path=/private/var/folders
-description.en=System temporary files. Mostly safe to clean.
-description.tr=Sistem geçici dosyaları. Genellikle silinmesinde sakınca yoktur.
+description.en=macOS system temporary folders. Usually safe to clean.
+description.tr=macOS sistem geçici klasörleri. Genellikle güvenle temizlenebilir.
+
+[npm_cache]
+name=NPM Cache
+path=~/.npm
+description.en=Node.js package cache. Can be removed to save space.
+description.tr=Node.js paket önbelleği. Alan kazanmak için silinebilir.
+
+[yarn_cache]
+name=Yarn Cache
+path=~/.cache/yarn
+description.en=Yarn package cache. Safe to remove.
+description.tr=Yarn paket önbelleği. Silinmesi güvenlidir.
