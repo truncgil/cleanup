@@ -20,4 +20,22 @@ export function createResultElement(result) {
   });
 
   return clone;
+}
+
+export function selectAllResults() {
+  const checkboxes = document.querySelectorAll('.result-checkbox');
+  checkboxes.forEach(checkbox => {
+    checkbox.checked = true;
+  });
+  updateTotalSize();
+  updateCleanButton();
+}
+
+export function unselectAllResults() {
+  const checkboxes = document.querySelectorAll('.result-checkbox');
+  checkboxes.forEach(checkbox => {
+    checkbox.checked = false;
+  });
+  updateTotalSize();
+  updateCleanButton();
 } 

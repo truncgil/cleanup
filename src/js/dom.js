@@ -14,6 +14,8 @@ export const clearLogsButton = document.getElementById('clear-logs');
 export const appLogo = document.getElementById('app-logo');
 export const selectAllRulesButton = document.getElementById('select-all-rules');
 export const unselectAllRulesButton = document.getElementById('unselect-all-rules');
+export const selectAllResultsButton = document.getElementById('select-all-results');
+export const unselectAllResultsButton = document.getElementById('unselect-all-results');
 
 // Bootstrap Modal
 export const settingsModal = new bootstrap.Modal(document.getElementById('settingsModal'));

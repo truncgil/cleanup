@@ -8,6 +8,8 @@ import {
   clearLogsButton,
   selectAllRulesButton,
   unselectAllRulesButton,
+  selectAllResultsButton,
+  unselectAllResultsButton,
   settingsModal
 } from './dom.js';
 
@@ -26,6 +28,9 @@ import { startCleanup } from './cleaner.js';
 // Logger
 import { clearLogs } from './logger.js';
 
+// Results
+import { selectAllResults, unselectAllResults } from './results.js';
+
 // Translations
 import { changeLanguage } from './translations.js';
 
@@ -40,6 +45,8 @@ darkModeToggle.addEventListener('change', toggleDarkMode);
 clearLogsButton.addEventListener('click', clearLogs);
 selectAllRulesButton.addEventListener('click', selectAllRules);
 unselectAllRulesButton.addEventListener('click', unselectAllRules);
+selectAllResultsButton.addEventListener('click', selectAllResults);
+unselectAllResultsButton.addEventListener('click', unselectAllResults);
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
