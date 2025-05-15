@@ -8,6 +8,10 @@ const totalSizeElement = document.getElementById('total-size');
 const languageSelect = document.getElementById('language-select');
 const darkModeToggle = document.getElementById('dark-mode');
 const lastScanDate = document.getElementById('last-scan-date');
+const logContainer = document.getElementById('log-container');
+const logContent = document.getElementById('log-content');
+const clearLogsButton = document.getElementById('clear-logs');
+const appLogo = document.getElementById('app-logo');
 
 // Bootstrap Modal
 const settingsModal = new bootstrap.Modal(document.getElementById('settingsModal'));
@@ -20,6 +24,7 @@ const resultTemplate = document.getElementById('result-template');
 let selectedRules = new Set();
 let scanResults = [];
 let totalSize = 0;
+let scanConfig = null;
 
 // Event Listeners
 scanButton.addEventListener('click', startScan);
@@ -27,10 +32,12 @@ cleanButton.addEventListener('click', startCleanup);
 settingsButton.addEventListener('click', () => settingsModal.show());
 languageSelect.addEventListener('change', updateLanguage);
 darkModeToggle.addEventListener('change', toggleDarkMode);
+clearLogsButton.addEventListener('click', clearLogs);
 
 // Initialize
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   loadSettings();
+  await loadScanConfig();
   loadRules();
 });
 
@@ -61,12 +68,27 @@ function updateLanguage() {
 }
 
 function toggleDarkMode() {
-  document.body.classList.toggle('dark-mode', darkModeToggle.checked);
+  const isDarkMode = darkModeToggle.checked;
+  document.body.classList.toggle('dark-mode', isDarkMode);
+  
+  // Logo değiştirme
+  if (isDarkMode) {
+    appLogo.src = 'assets/cleantr-dark.svg';
+  } else {
+    appLogo.src = 'assets/cleantr.svg';
+  }
+  
+  // Modal arka planını güncelle
+  const modalBackdrops = document.querySelectorAll('.modal-backdrop');
+  modalBackdrops.forEach(backdrop => {
+    backdrop.classList.toggle('dark-mode', isDarkMode);
+  });
+  
   saveSettings();
 }
 
 function loadRules() {
-  // Kuralları yükle
+  addLog('Kurallar yükleniyor...');
   fetch('rules.json')
     .then(response => response.json())
     .then(rules => {
@@ -74,11 +96,14 @@ function loadRules() {
       rules.forEach(rule => {
         const ruleElement = createRuleElement(rule);
         rulesContainer.appendChild(ruleElement);
+        addLog(`Kural yüklendi: ${rule.name}`);
       });
+      addLog('Tüm kurallar başarıyla yüklendi.');
     })
     .catch(error => {
       console.error('Kurallar yüklenirken hata oluştu:', error);
       rulesContainer.innerHTML = '<div class="alert alert-danger">Kurallar yüklenirken bir hata oluştu.</div>';
+      addLog(`HATA: Kurallar yüklenirken hata oluştu: ${error.message}`);
     });
 }
 
@@ -126,23 +151,64 @@ function createResultElement(result) {
   return clone;
 }
 
-function startScan() {
+async function loadScanConfig() {
+  try {
+    const response = await fetch('scan-config.json');
+    scanConfig = await response.json();
+    addLog('Tarama yapılandırması yüklendi.');
+  } catch (error) {
+    console.error('Tarama yapılandırması yüklenirken hata:', error);
+    addLog(`HATA: Tarama yapılandırması yüklenirken hata: ${error.message}`);
+  }
+}
+
+async function startScan() {
+  if (!scanConfig) {
+    addLog('HATA: Tarama yapılandırması yüklenemedi.');
+    return;
+  }
+
   scanButton.disabled = true;
   scanButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Tara...';
+  logContainer.classList.remove('d-none');
+  addLog('Tarama başlatılıyor...');
   
-  // Tarama işlemi simülasyonu
-  setTimeout(() => {
-    scanResults = [
-      { id: 1, name: 'Derived Data', path: '~/Library/Developer/Xcode/DerivedData', size: 1024 * 1024 * 500 },
-      { id: 2, name: 'iOS Simulators', path: '~/Library/Developer/CoreSimulator/Devices', size: 1024 * 1024 * 300 }
-    ];
+  scanResults = [];
+  
+  for (const folder of scanConfig.scan_folders) {
+    if (!folder.enabled) {
+      addLog(`${folder.name} klasörü devre dışı bırakıldı, atlanıyor...`);
+      continue;
+    }
+
+    addLog(`${folder.name} klasörü taranıyor...`);
     
-    displayResults();
-    scanButton.disabled = false;
-    scanButton.textContent = 'Tara';
-    lastScanDate.textContent = new Date().toLocaleDateString();
-    saveSettings();
-  }, 2000);
+    try {
+      // Burada gerçek klasör tarama işlemi yapılacak
+      // Şimdilik simüle ediyoruz
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const size = Math.floor(Math.random() * 1024 * 1024 * 1000); // Rastgele boyut
+      scanResults.push({
+        id: folder.id,
+        name: folder.name,
+        path: folder.path,
+        size: size,
+        description: folder.description[languageSelect.value]
+      });
+      
+      addLog(`${folder.name} klasörü tarandı. Boyut: ${formatSize(size)}`);
+    } catch (error) {
+      addLog(`HATA: ${folder.name} klasörü taranırken hata: ${error.message}`);
+    }
+  }
+  
+  displayResults();
+  scanButton.disabled = false;
+  scanButton.textContent = 'Tara';
+  lastScanDate.textContent = new Date().toLocaleDateString();
+  saveSettings();
+  addLog('Tarama tamamlandı.');
 }
 
 function displayResults() {
@@ -206,4 +272,16 @@ function formatSize(bytes) {
   }
 
   return `${size.toFixed(1)} ${units[unitIndex]}`;
+}
+
+// Log işlevleri
+function addLog(message) {
+  const timestamp = new Date().toLocaleTimeString();
+  const logEntry = `[${timestamp}] ${message}\n`;
+  logContent.textContent += logEntry;
+  logContent.scrollTop = logContent.scrollHeight;
+}
+
+function clearLogs() {
+  logContent.textContent = '';
 } 

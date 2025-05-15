@@ -1,0 +1,84 @@
+{
+  "scan_folders": [
+    {
+      "id": "xcode_derived_data",
+      "name": "Derived Data",
+      "path": "~/Library/Developer/Xcode/DerivedData",
+      "description": {
+        "tr": "Xcode tarafından oluşturulan geçici derleme dosyaları",
+        "en": "Temporary build files created by Xcode"
+      },
+      "enabled": true
+    },
+    {
+      "id": "xcode_archives",
+      "name": "Xcode Archives",
+      "path": "~/Library/Developer/Xcode/Archives",
+      "description": {
+        "tr": "Xcode tarafından oluşturulan derleme arşivleri",
+        "en": "Build archives created by Xcode"
+      },
+      "enabled": true
+    },
+    {
+      "id": "ios_simulators",
+      "name": "iOS Simulators",
+      "path": "~/Library/Developer/CoreSimulator/Devices",
+      "description": {
+        "tr": "iOS simülatör dosyaları ve verileri",
+        "en": "iOS simulator files and data"
+      },
+      "enabled": true
+    },
+    {
+      "id": "android_avd",
+      "name": "Android Emulators",
+      "path": "~/.android/avd",
+      "description": {
+        "tr": "Android sanal cihaz dosyaları",
+        "en": "Android virtual device files"
+      },
+      "enabled": true
+    },
+    {
+      "id": "gradle_cache",
+      "name": "Gradle Cache",
+      "path": "~/.gradle/caches",
+      "description": {
+        "tr": "Gradle önbellek dosyaları",
+        "en": "Gradle cache files"
+      },
+      "enabled": true
+    },
+    {
+      "id": "npm_cache",
+      "name": "NPM Cache",
+      "path": "~/.npm",
+      "description": {
+        "tr": "Node.js paket önbelleği",
+        "en": "Node.js package cache"
+      },
+      "enabled": true
+    },
+    {
+      "id": "yarn_cache",
+      "name": "Yarn Cache",
+      "path": "~/.cache/yarn",
+      "description": {
+        "tr": "Yarn paket önbelleği",
+        "en": "Yarn package cache"
+      },
+      "enabled": true
+    },
+    {
+      "id": "system_temp",
+      "name": "System Temp",
+      "path": "/private/var/folders",
+      "description": {
+        "tr": "Sistem geçici dosyaları",
+        "en": "System temporary files"
+      },
+      "enabled": true
+    }
+  ]
+} 
