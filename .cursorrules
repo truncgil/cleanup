@@ -1,0 +1,50 @@
+# Cleantr Scan Rules File
+# Defines which folders Cleantr will scan and what they are used for.
+
+[xcode_derived_data]
+name=Derived Data
+path=~/Library/Developer/Xcode/DerivedData
+description.en=Temporary build data created by Xcode. Safe to delete.
+description.tr=Xcode tarafından oluşturulan geçici derleme verileri. Silinmesinde sakınca yok.
+
+[xcode_archives]
+name=Archives
+path=~/Library/Developer/Xcode/Archives
+description.en=Archived builds from Xcode. Delete if you don't need past build history.
+description.tr=Xcode arşivlenmiş derleme dosyaları. Geçmiş derlemelere ihtiyaç duymuyorsan silebilirsin.
+
+[xcode_device_support]
+name=Device Support
+path=~/Library/Developer/Xcode/iOS DeviceSupport
+description.en=Old device support files. Deleting them can save space.
+description.tr=Eski cihaz destek dosyaları. Silmek yer açar.
+
+[flutter_builds]
+name=Flutter Build
+path=build/
+description.en=Build outputs of Flutter projects. Can be deleted if not needed.
+description.tr=Flutter projelerinin derleme çıktıları. Gerekli değilse silinebilir.
+
+[android_avd]
+name=Android Emulators (AVD)
+path=~/.android/avd
+description.en=Emulator images. Deleting will remove Android virtual devices.
+description.tr=Android emülatör görüntüleri. Silmek emülatörleri kaldırır.
+
+[android_gradle_cache]
+name=Gradle Cache
+path=~/.gradle/caches
+description.en=Gradle download cache. Will be re-downloaded if deleted.
+description.tr=Gradle indirme önbelleği. Silinirse tekrar indirilecektir.
+
+[adobe_temp]
+name=Adobe Temp Files
+path=/System/Volumes/Data/.adobeTemp
+description.en=Adobe's temporary files. Often large and safe to remove.
+description.tr=Adobe geçici dosyaları. Genellikle büyük boyutludur ve silinmesi güvenlidir.
+
+[system_temp]
+name=macOS Temp Files
+path=/private/var/folders
+description.en=System temporary files. Mostly safe to clean.
+description.tr=Sistem geçici dosyaları. Genellikle silinmesinde sakınca yoktur.

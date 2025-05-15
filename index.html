@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cleantr - macOS Temizleme Aracı</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="title-bar">
+        <h1>Cleantr</h1>
+        <div class="controls">
+          <button id="settings-button" class="icon-button">⚙️</button>
+        </div>
+      </div>
+      <div class="action-bar">
+        <button id="scan-button" class="primary-button">Tara</button>
+        <button id="clean-button" class="secondary-button" disabled>Temizle</button>
+        <div class="spacer"></div>
+        <span id="total-size"></span>
+      </div>
+    </header>
+
+    <main class="content">
+      <div id="rules-container" class="rules-list">
+        <!-- Kurallar buraya yüklenecek -->
+        <div class="loading">Yükleniyor...</div>
+      </div>
+
+      <div id="results-container" class="results-list hidden">
+        <!-- Sonuçlar buraya yüklenecek -->
+      </div>
+    </main>
+
+    <div id="settings-panel" class="settings-panel hidden">
+      <div class="settings-header">
+        <h2>Ayarlar</h2>
+        <button id="close-settings" class="icon-button">✕</button>
+      </div>
+      <div class="settings-content">
+        <div class="setting-item">
+          <label for="language-select">Dil</label>
+          <select id="language-select">
+            <option value="tr">Türkçe</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+        <div class="setting-item">
+          <label for="dark-mode">Koyu Tema</label>
+          <input type="checkbox" id="dark-mode">
+        </div>
+        <div class="setting-item last-scan-info">
+          <span>Son Tarama: </span>
+          <span id="last-scan-date">Hiç</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <template id="rule-template">
+    <div class="rule-item">
+      <div class="rule-header">
+        <input type="checkbox" class="rule-checkbox">
+        <h3 class="rule-name"></h3>
+      </div>
+      <div class="rule-details">
+        <div class="rule-path"></div>
+        <div class="rule-description"></div>
+      </div>
+    </div>
+  </template>
+
+  <template id="result-template">
+    <div class="result-item">
+      <div class="result-header">
+        <input type="checkbox" class="result-checkbox">
+        <h3 class="result-name"></h3>
+        <span class="result-size"></span>
+      </div>
+      <div class="result-path"></div>
+    </div>
+  </template>
+
+  <script src="renderer.js"></script>
+</body>
+</html> 
