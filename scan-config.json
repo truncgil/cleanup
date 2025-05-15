@@ -1,52 +1,52 @@
 {
-  "scan_folders": [
+  "scanFolders": [
     {
       "id": "xcode_derived_data",
       "name": "Derived Data",
       "path": "~/Library/Developer/Xcode/DerivedData",
       "description": {
-        "tr": "Xcode tarafından oluşturulan geçici derleme dosyaları",
-        "en": "Temporary build files created by Xcode"
+        "tr": "Xcode tarafından oluşturulan geçici derleme dosyaları. Güvenle silinebilir.",
+        "en": "Temporary build files created by Xcode. Safe to delete."
       },
       "enabled": true
     },
     {
       "id": "xcode_archives",
-      "name": "Xcode Archives",
+      "name": "Archives",
       "path": "~/Library/Developer/Xcode/Archives",
       "description": {
-        "tr": "Xcode tarafından oluşturulan derleme arşivleri",
-        "en": "Build archives created by Xcode"
+        "tr": "Xcode tarafından oluşturulan derleme arşivleri. Geçmiş derlemelere ihtiyaç duymuyorsanız silin.",
+        "en": "Build archives created by Xcode. Delete if you don't need past builds."
       },
       "enabled": true
     },
     {
-      "id": "ios_simulators",
+      "id": "simulators",
       "name": "iOS Simulators",
       "path": "~/Library/Developer/CoreSimulator/Devices",
       "description": {
-        "tr": "iOS simülatör dosyaları ve verileri",
-        "en": "iOS simulator files and data"
+        "tr": "Simülatör dosyaları, uygulamalar ve veriler. Gerektiğinde yeniden oluşturulur.",
+        "en": "Simulator files, apps and data. Recreated when needed."
       },
       "enabled": true
     },
     {
       "id": "android_avd",
-      "name": "Android Emulators",
+      "name": "Android Emulators (AVD)",
       "path": "~/.android/avd",
       "description": {
-        "tr": "Android sanal cihaz dosyaları",
-        "en": "Android virtual device files"
+        "tr": "Android sanal cihaz imajları ve verileri. Genellikle büyük boyutludur.",
+        "en": "Android virtual device images and data. Can be large in size."
       },
       "enabled": true
     },
     {
-      "id": "gradle_cache",
-      "name": "Gradle Cache",
+      "id": "android_gradle_cache",
+      "name": "Gradle Caches",
       "path": "~/.gradle/caches",
       "description": {
-        "tr": "Gradle önbellek dosyaları",
-        "en": "Gradle cache files"
+        "tr": "Gradle build/indirme önbelleği. Gerektiğinde yeniden oluşturulur.",
+        "en": "Gradle build/download cache. Will be regenerated."
       },
       "enabled": true
     },
@@ -55,8 +55,8 @@
       "name": "NPM Cache",
       "path": "~/.npm",
       "description": {
-        "tr": "Node.js paket önbelleği",
-        "en": "Node.js package cache"
+        "tr": "Node.js paket önbelleği. Alan kazanmak için silinebilir.",
+        "en": "Node.js package cache. Can be removed to save space."
       },
       "enabled": true
     },
@@ -65,18 +65,18 @@
       "name": "Yarn Cache",
       "path": "~/.cache/yarn",
       "description": {
-        "tr": "Yarn paket önbelleği",
-        "en": "Yarn package cache"
+        "tr": "Yarn paket önbelleği. Silinmesi güvenlidir.",
+        "en": "Yarn package cache. Safe to remove."
       },
       "enabled": true
     },
     {
       "id": "system_temp",
-      "name": "System Temp",
+      "name": "System Temp Files",
       "path": "/private/var/folders",
       "description": {
-        "tr": "Sistem geçici dosyaları",
-        "en": "System temporary files"
+        "tr": "macOS sistem geçici klasörleri. Genellikle güvenle temizlenebilir.",
+        "en": "macOS system temporary folders. Usually safe to clean."
       },
       "enabled": true
     }

@@ -26,11 +26,57 @@ let scanResults = [];
 let totalSize = 0;
 let scanConfig = null;
 
+// Dil değişkenleri
+const translations = {
+  tr: {
+    scan: 'Tara',
+    clean: 'Temizle',
+    selectAll: 'Tümünü Seç',
+    unselectAll: 'Tümünü Kaldır',
+    loading: 'Yükleniyor...',
+    scanLogs: 'Tarama Logları',
+    clear: 'Temizle',
+    settings: 'Ayarlar',
+    language: 'Dil',
+    darkMode: 'Koyu Tema',
+    lastScan: 'Son Tarama',
+    never: 'Hiç',
+    scanStarted: 'Tarama başlatıldı...',
+    scanCompleted: 'Tarama tamamlandı',
+    scanError: 'Tarama sırasında hata oluştu',
+    rulesLoaded: 'Kurallar yüklendi',
+    rulesError: 'Kurallar yüklenirken hata oluştu'
+  },
+  en: {
+    scan: 'Scan',
+    clean: 'Clean',
+    selectAll: 'Select All',
+    unselectAll: 'Unselect All',
+    loading: 'Loading...',
+    scanLogs: 'Scan Logs',
+    clear: 'Clear',
+    settings: 'Settings',
+    language: 'Language',
+    darkMode: 'Dark Mode',
+    lastScan: 'Last Scan',
+    never: 'Never',
+    scanStarted: 'Scan started...',
+    scanCompleted: 'Scan completed',
+    scanError: 'Error during scan',
+    rulesLoaded: 'Rules loaded',
+    rulesError: 'Error loading rules'
+  }
+};
+
+let currentLanguage = 'tr';
+
 // Event Listeners
 scanButton.addEventListener('click', startScan);
 cleanButton.addEventListener('click', startCleanup);
 settingsButton.addEventListener('click', () => settingsModal.show());
-languageSelect.addEventListener('change', updateLanguage);
+languageSelect.addEventListener('change', (e) => {
+  changeLanguage(e.target.value);
+});
 darkModeToggle.addEventListener('change', toggleDarkMode);
 clearLogsButton.addEventListener('click', clearLogs);
 
@@ -39,6 +85,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   loadSettings();
   await loadScanConfig();
   loadRules();
+  changeLanguage('tr');
 });
 
 // Functions
@@ -88,22 +135,32 @@ function toggleDarkMode() {
 }
 
 function loadRules() {
-  addLog('Kurallar yükleniyor...');
-  fetch('rules.json')
-    .then(response => response.json())
-    .then(rules => {
+  addLog(translations[currentLanguage].loading);
+  updateStep(1);
+  
+  fetch('scan-config.json')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Kurallar yüklenemedi');
+      }
+      return response.json();
+    })
+    .then(config => {
       rulesContainer.innerHTML = '';
-      rules.forEach(rule => {
+      config.scanFolders.forEach(rule => {
         const ruleElement = createRuleElement(rule);
         rulesContainer.appendChild(ruleElement);
-        addLog(`Kural yüklendi: ${rule.name}`);
+        addLog(`${rule.name} kuralı yüklendi`);
       });
-      addLog('Tüm kurallar başarıyla yüklendi.');
+      addLog(translations[currentLanguage].rulesLoaded);
     })
     .catch(error => {
-      console.error('Kurallar yüklenirken hata oluştu:', error);
-      rulesContainer.innerHTML = '<div class="alert alert-danger">Kurallar yüklenirken bir hata oluştu.</div>';
-      addLog(`HATA: Kurallar yüklenirken hata oluştu: ${error.message}`);
+      console.error('Kurallar yüklenirken hata:', error);
+      rulesContainer.innerHTML = `<div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        ${translations[currentLanguage].rulesError}
+      </div>`;
+      addLog(`HATA: ${translations[currentLanguage].rulesError}`);
     });
 }
 
@@ -117,7 +174,7 @@ function createRuleElement(rule) {
   checkbox.id = `rule-${rule.id}`;
   name.textContent = rule.name;
   path.textContent = rule.path;
-  description.textContent = rule.description[languageSelect.value];
+  description.textContent = rule.description[currentLanguage];
 
   checkbox.addEventListener('change', () => {
     if (checkbox.checked) {
@@ -171,11 +228,12 @@ async function startScan() {
   scanButton.disabled = true;
   scanButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Tara...';
   logContainer.classList.remove('d-none');
-  addLog('Tarama başlatılıyor...');
+  addLog(translations[currentLanguage].scanStarted);
+  updateStep(2);
   
   scanResults = [];
   
-  for (const folder of scanConfig.scan_folders) {
+  for (const folder of scanConfig.scanFolders) {
     if (!folder.enabled) {
       addLog(`${folder.name} klasörü devre dışı bırakıldı, atlanıyor...`);
       continue;
@@ -194,7 +252,7 @@ async function startScan() {
         name: folder.name,
         path: folder.path,
         size: size,
-        description: folder.description[languageSelect.value]
+        description: folder.description[currentLanguage]
       });
       
       addLog(`${folder.name} klasörü tarandı. Boyut: ${formatSize(size)}`);
@@ -205,10 +263,11 @@ async function startScan() {
   
   displayResults();
   scanButton.disabled = false;
-  scanButton.textContent = 'Tara';
+  scanButton.textContent = translations[currentLanguage].scan;
   lastScanDate.textContent = new Date().toLocaleDateString();
   saveSettings();
-  addLog('Tarama tamamlandı.');
+  addLog(translations[currentLanguage].scanCompleted);
+  updateStep(3);
 }
 
 function displayResults() {
@@ -238,27 +297,91 @@ function updateCleanButton() {
   cleanButton.disabled = !hasSelectedResults;
 }
 
-function startCleanup() {
+// Adım göstergelerini güncelleme
+function updateStep(step) {
+  // Wizard adımlarını güncelle
+  document.querySelectorAll('.wizard-step').forEach((el, index) => {
+    if (index + 1 < step) {
+      el.classList.add('completed');
+      el.classList.remove('active');
+    } else if (index + 1 === step) {
+      el.classList.add('active');
+      el.classList.remove('completed');
+    } else {
+      el.classList.remove('active', 'completed');
+    }
+  });
+
+  // İçerik alanlarını güncelle
+  document.querySelectorAll('.step-content').forEach((el, index) => {
+    if (index + 1 === step) {
+      el.classList.add('active');
+    } else {
+      el.classList.remove('active');
+    }
+  });
+}
+
+// Temizleme işlemi
+async function startCleanup() {
   if (!confirm('Seçili dosyaları silmek istediğinizden emin misiniz?')) {
     return;
   }
 
   cleanButton.disabled = true;
   cleanButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Temizleniyor...';
+  updateStep(3);
 
-  // Temizleme işlemi simülasyonu
-  setTimeout(() => {
-    const selectedResults = document.querySelectorAll('.result-checkbox:checked');
-    selectedResults.forEach(checkbox => {
-      const resultElement = checkbox.closest('.card');
-      resultElement.remove();
-    });
+  const progressBar = document.querySelector('#cleanup-progress');
+  const progressBarInner = progressBar.querySelector('.progress-bar');
+  progressBar.classList.remove('d-none');
 
-    cleanButton.disabled = false;
-    cleanButton.textContent = 'Temizle';
-    updateTotalSize();
-    updateCleanButton();
-  }, 2000);
+  const selectedResults = document.querySelectorAll('.result-checkbox:checked');
+  const totalFiles = selectedResults.length;
+  let cleanedFiles = 0;
+  let totalCleanedSize = 0;
+
+  for (const checkbox of selectedResults) {
+    const resultElement = checkbox.closest('.card');
+    const result = scanResults.find(r => `result-${r.id}` === checkbox.id);
+    
+    if (result) {
+      try {
+        // Burada gerçek silme işlemi yapılacak
+        await new Promise(resolve => setTimeout(resolve, 500)); // Simülasyon
+        
+        totalCleanedSize += result.size;
+        cleanedFiles++;
+        
+        // Progress bar güncelleme
+        const progress = (cleanedFiles / totalFiles) * 100;
+        progressBarInner.style.width = `${progress}%`;
+        
+        // İstatistikleri güncelle
+        document.getElementById('total-cleaned').textContent = formatSize(totalCleanedSize);
+        document.getElementById('files-cleaned').textContent = cleanedFiles;
+        
+        // Log ekle
+        addLog(`${result.name} temizlendi (${formatSize(result.size)})`);
+        
+        // Kartı kaldır
+        resultElement.remove();
+      } catch (error) {
+        addLog(`HATA: ${result.name} temizlenirken hata: ${error.message}`);
+      }
+    }
+  }
+
+  // İşlem tamamlandı
+  cleanButton.disabled = false;
+  cleanButton.textContent = translations[currentLanguage].clean;
+  progressBar.classList.add('d-none');
+  
+  // Son istatistikleri göster
+  const spaceSaved = ((totalCleanedSize / (1024 * 1024 * 1024)) * 100).toFixed(1);
+  document.getElementById('space-saved').textContent = `${spaceSaved}%`;
+  
+  addLog(`Temizleme tamamlandı. Toplam ${formatSize(totalCleanedSize)} temizlendi.`);
 }
 
 function formatSize(bytes) {
@@ -280,8 +403,52 @@ function addLog(message) {
   const logEntry = `[${timestamp}] ${message}\n`;
   logContent.textContent += logEntry;
   logContent.scrollTop = logContent.scrollHeight;
+  
+  // Log container'ı görünür yap
+  logContainer.classList.remove('d-none');
 }
 
 function clearLogs() {
   logContent.textContent = '';
+}
+
+// Dil değiştirme fonksiyonu
+function changeLanguage(lang) {
+  currentLanguage = lang;
+  document.getElementById('scan-button').textContent = translations[lang].scan;
+  document.getElementById('clean-button').textContent = translations[lang].clean;
+  document.getElementById('select-all-results').textContent = translations[lang].selectAll;
+  document.getElementById('unselect-all-results').textContent = translations[lang].unselectAll;
+  document.getElementById('select-all-rules').textContent = translations[lang].selectAll;
+  document.getElementById('unselect-all-rules').textContent = translations[lang].unselectAll;
+  document.querySelector('.loading p').textContent = translations[lang].loading;
+  document.querySelector('#log-container h5').textContent = translations[lang].scanLogs;
+  document.getElementById('clear-logs').textContent = translations[lang].clear;
+  document.querySelector('.modal-title').textContent = translations[lang].settings;
+  document.querySelector('label[for="language-select"]').textContent = translations[lang].language;
+  document.querySelector('label[for="dark-mode"]').textContent = translations[lang].darkMode;
+  document.querySelector('.text-muted small').textContent = translations[lang].lastScan + ': ';
+  
+  // Başlıkları güncelle
+  document.querySelector('#step-1-content h2').textContent = lang === 'tr' ? 'Temizlenecek Klasörler' : 'Folders to Clean';
+  document.querySelector('#step-2-content h2').textContent = lang === 'tr' ? 'Tarama Logları' : 'Scan Logs';
+  document.querySelector('#step-3-content h2').textContent = lang === 'tr' ? 'Temizleme Sonuçları' : 'Cleanup Results';
+  
+  // İstatistik etiketlerini güncelle
+  const stats = {
+    tr: {
+      totalCleaned: 'Toplam Temizlenen',
+      spaceSaved: 'Yer Kazanıldı',
+      filesCleaned: 'Temizlenen Dosya'
+    },
+    en: {
+      totalCleaned: 'Total Cleaned',
+      spaceSaved: 'Space Saved',
+      filesCleaned: 'Files Cleaned'
+    }
+  };
+  
+  document.querySelector('#total-cleaned + p').textContent = stats[lang].totalCleaned;
+  document.querySelector('#space-saved + p').textContent = stats[lang].spaceSaved;
+  document.querySelector('#files-cleaned + p').textContent = stats[lang].filesCleaned;
 } 

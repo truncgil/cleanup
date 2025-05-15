@@ -16,19 +16,34 @@
       <div class="container py-3">
         <div class="row align-items-center">
           <div class="col-auto">
-            <img id="app-logo" src="assets/cleantr.svg" alt="Cleantr Logo" />
+            <img id="app-logo" src="assets/cleantr.svg" alt="Cleantr Logo" class="app-logo" />
           </div>
           <div class="col">
             <div class="d-flex justify-content-between align-items-center">
-              <div class="stepper d-flex align-items-center">
-                <div class="step active" id="step-1">1</div>
-                <div class="step-line"></div>
-                <div class="step" id="step-2">2</div>
-                <div class="step-line"></div>
-                <div class="step" id="step-3">3</div>
+              <div class="wizard">
+                <div class="wizard-steps">
+                  <div class="wizard-step active" id="step-1">
+                    <div class="wizard-step-icon">
+                      <i class="bi bi-list-check"></i>
+                    </div>
+                    <div class="wizard-step-label">Kurallar</div>
+                  </div>
+                  <div class="wizard-step" id="step-2">
+                    <div class="wizard-step-icon">
+                      <i class="bi bi-search"></i>
+                    </div>
+                    <div class="wizard-step-label">Tarama</div>
+                  </div>
+                  <div class="wizard-step" id="step-3">
+                    <div class="wizard-step-icon">
+                      <i class="bi bi-trash"></i>
+                    </div>
+                    <div class="wizard-step-label">Temizleme</div>
+                  </div>
+                </div>
               </div>
               <button id="settings-button" class="btn btn-link text-dark">
-                <i class="bi bi-gear-fill"></i>
+                <i class="bi bi-gear-fill fs-4"></i>
               </button>
             </div>
           </div>
@@ -48,36 +63,76 @@
     </header>
 
     <main class="container py-4">
-      <div id="results-container" class="results-list d-none">
-        <div class="d-flex gap-2 mb-3">
-          <button id="select-all-results" class="btn btn-sm btn-outline-primary">Tümünü Seç</button>
-          <button id="unselect-all-results" class="btn btn-sm btn-outline-secondary">Tümünü Kaldır</button>
-        </div>
-        <!-- Sonuçlar buraya yüklenecek -->
-      </div>
-
-      <div id="log-container" class="mt-4 d-none">
-        <div class="card">
-          <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Tarama Logları</h5>
-            <button id="clear-logs" class="btn btn-sm btn-outline-secondary">Temizle</button>
+      <!-- Step 1: Rules -->
+      <div id="step-1-content" class="step-content active">
+        <h2 class="mb-4">Temizlenecek Klasörler</h2>
+        <div id="rules-container" class="rules-list">
+          <div class="d-flex gap-2 mb-3">
+            <button id="select-all-rules" class="btn btn-sm btn-outline-primary">Tümünü Seç</button>
+            <button id="unselect-all-rules" class="btn btn-sm btn-outline-secondary">Tümünü Kaldır</button>
           </div>
-          <div class="card-body">
-            <pre id="log-content" class="log-content"></pre>
+          <div class="loading text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Yükleniyor...</span>
+            </div>
+            <p class="mt-2">Yükleniyor...</p>
           </div>
         </div>
       </div>
 
-      <div id="rules-container" class="rules-list">
-        <div class="d-flex gap-2 mb-3">
-          <button id="select-all-rules" class="btn btn-sm btn-outline-primary">Tümünü Seç</button>
-          <button id="unselect-all-rules" class="btn btn-sm btn-outline-secondary">Tümünü Kaldır</button>
-        </div>
-        <div class="loading text-center py-5">
-          <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Yükleniyor...</span>
+      <!-- Step 2: Scan Logs -->
+      <div id="step-2-content" class="step-content">
+        <h2 class="mb-4">Tarama Logları</h2>
+        <div id="log-container" class="mt-4">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">Tarama Detayları</h5>
+              <button id="clear-logs" class="btn btn-sm btn-outline-secondary">Temizle</button>
+            </div>
+            <div class="card-body">
+              <pre id="log-content" class="log-content"></pre>
+            </div>
           </div>
-          <p class="mt-2">Yükleniyor...</p>
+        </div>
+      </div>
+
+      <!-- Step 3: Cleanup Results -->
+      <div id="step-3-content" class="step-content">
+        <h2 class="mb-4">Temizleme Sonuçları</h2>
+        <div id="results-container" class="results-list">
+          <div class="d-flex gap-2 mb-3">
+            <button id="select-all-results" class="btn btn-sm btn-outline-primary">Tümünü Seç</button>
+            <button id="unselect-all-results" class="btn btn-sm btn-outline-secondary">Tümünü Kaldır</button>
+          </div>
+          <div class="cleanup-stats mb-4">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="stat-item">
+                      <h3 id="total-cleaned">0 MB</h3>
+                      <p class="text-muted">Toplam Temizlenen</p>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="stat-item">
+                      <h3 id="space-saved">0%</h3>
+                      <p class="text-muted">Yer Kazanıldı</p>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="stat-item">
+                      <h3 id="files-cleaned">0</h3>
+                      <p class="text-muted">Temizlenen Dosya</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="cleanup-progress" class="progress mb-4 d-none">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+          </div>
         </div>
       </div>
     </main>
