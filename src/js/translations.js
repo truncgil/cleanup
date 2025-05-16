@@ -43,6 +43,12 @@ export let currentLanguage = 'tr';
 
 export function changeLanguage(lang) {
   currentLanguage = lang;
+  
+  // Dil ayarını localStorage'a kaydet
+  const settings = JSON.parse(localStorage.getItem('settings') || '{}');
+  settings.language = lang;
+  localStorage.setItem('settings', JSON.stringify(settings));
+  
   document.getElementById('scan-button-text').textContent = translations[lang].scan;
   document.getElementById('clean-button-text').textContent = translations[lang].clean;
   document.getElementById('select-all-rules').textContent = translations[lang].selectAll;

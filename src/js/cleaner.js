@@ -1,13 +1,13 @@
 import { cleanButton } from './dom.js';
 import { translations, currentLanguage } from './translations.js';
 import { addLog } from './logger.js';
-import { updateStep, formatSize } from './utils.js';
+import { updateStep, formatSize, showSwal } from './utils.js';
 
 export async function startCleanup() {
   // Seçili öğeleri kontrol et
   const selectedResults = document.querySelectorAll('.result-checkbox:checked');
   if (selectedResults.length === 0) {
-    await Swal.fire({
+    await showSwal({
       title: 'Uyarı',
       text: 'Temizlenecek hiçbir öğe seçilmedi!',
       icon: 'warning',
@@ -16,7 +16,7 @@ export async function startCleanup() {
     return;
   }
 
-  const result = await Swal.fire({
+  const result = await showSwal({
     title: 'Onay',
     text: 'Seçili dosyaları silmek istediğinizden emin misiniz?',
     icon: 'warning',
@@ -45,7 +45,7 @@ export async function startCleanup() {
   progressBar.classList.remove('d-none');
 
   // Temizleme başladı bildirimi
-  Swal.fire({
+  showSwal({
     title: 'Temizleme Başladı',
     html: 'Seçili dosyalar temizleniyor...',
     icon: 'info',
@@ -97,7 +97,7 @@ export async function startCleanup() {
   document.getElementById('space-saved').textContent = `${spaceSaved}%`;
   
   // Temizleme tamamlandı bildirimi
-  await Swal.fire({
+  await showSwal({
     title: 'Temizleme Tamamlandı',
     html: `Toplam ${formatSize(totalCleanedSize)} temizlendi.<br>${cleanedFiles} dosya işlendi.`,
     icon: 'success',

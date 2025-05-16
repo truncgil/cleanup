@@ -1,7 +1,7 @@
 :root {
   --background-color: #f5f5f5;
   --foreground-color: #333;
-  --primary-color: #0078d7;
+  --primary-color: #473185;
   --secondary-color: #f0f0f0;
   --border-color: #ddd;
   --hover-color: #eee;
@@ -14,7 +14,7 @@
 .dark-mode {
   --background-color: #1e1e1e;
   --foreground-color: #f5f5f5;
-  --primary-color: #4da3ff;
+  --primary-color: #6c599f;
   --secondary-color: #2d2d2d;
   --border-color: #444;
   --hover-color: #333;
@@ -210,6 +210,7 @@ button {
 
 .rule-description {
   font-size: 14px;
+  color: var(--foreground-color);
 }
 
 /* Settings Panel */
@@ -276,7 +277,7 @@ button {
 }
 
 .step.active {
-  background-color: #0d6efd;
+  background-color:  var(--primary-color);
   color: white;
 }
 
@@ -344,8 +345,8 @@ body.dark-mode .form-check-input {
 }
 
 body.dark-mode .form-check-input:checked {
-  background-color: #0d6efd;
-  border-color: #0d6efd;
+  background-color:  var(--primary-color);
+  border-color:  var(--primary-color);
 }
 
 body.dark-mode .modal-content {
@@ -376,17 +377,17 @@ body.dark-mode .form-select {
 }
 
 body.dark-mode .form-select:focus {
-  border-color: #0d6efd;
+  border-color:  var(--primary-color);
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
 body.dark-mode .btn-outline-primary {
-  color: #0d6efd;
-  border-color: #0d6efd;
+  color:  var(--primary-color);
+  border-color:  var(--primary-color);
 }
 
 body.dark-mode .btn-outline-primary:hover {
-  background-color: #0d6efd;
+  background-color:  var(--primary-color);
   color: #ffffff;
 }
 
@@ -424,8 +425,8 @@ body.dark-mode .alert-danger {
 
 /* Custom Button Styles */
 .btn-primary {
-  background-color: #0d6efd;
-  border-color: #0d6efd;
+  background-color:  var(--primary-color);
+  border-color:  var(--primary-color);
 }
 
 .btn-primary:hover {
@@ -607,8 +608,10 @@ body.dark-mode .wizard-step.completed .wizard-step-icon {
 
 /* App Logo */
 .app-logo {
-  width: 180px;
+  width: 195px;
   height: auto;
+  position: relative;
+  top: 6px;
 }
 
 /* Step Content */
@@ -750,4 +753,61 @@ body.dark-mode .btn-outline-secondary:hover {
   border-radius: 100% !important;
   width: 100px;
   height: 100px;
+}
+
+/* SweetAlert2 Dark Mode Styles */
+.swal2-dark {
+  background-color: #2d2d2d !important;
+  color: #f5f5f5 !important;
+}
+
+.swal2-dark-title {
+  color: #f5f5f5 !important;
+}
+
+.swal2-dark-header .swal2-title {
+  color: #f5f5f5 !important;
+}
+
+.swal2-dark-content {
+  color: #f5f5f5 !important;
+}
+
+.swal2-dark-input {
+  background-color: #404040 !important;
+  color: #f5f5f5 !important;
+  border-color: #505050 !important;
+}
+
+.swal2-dark-actions .swal2-styled.swal2-confirm {
+  background-color: var(--primary-color) !important;
+}
+
+.swal2-dark-actions .swal2-styled.swal2-cancel {
+  background-color: #6c757d !important;
+}
+
+.swal2-dark .swal2-icon.swal2-warning {
+  border-color: #ff9800 !important;
+  color: #ff9800 !important;
+}
+
+.swal2-dark .swal2-icon.swal2-error {
+  border-color: #f44336 !important;
+  color: #f44336 !important;
+}
+
+.swal2-dark .swal2-icon.swal2-success {
+  border-color: #4caf50 !important;
+  color: #4caf50 !important;
+}
+
+.swal2-dark .swal2-icon.swal2-info {
+  border-color: #2196f3 !important;
+  color: #2196f3 !important;
+}
+
+/* Loader (progress) dark mode */
+.dark-mode .swal2-loader {
+  border-color: var(--primary-color) transparent var(--primary-color) transparent;
 }

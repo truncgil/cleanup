@@ -61,6 +61,5 @@ document.addEventListener('DOMContentLoaded', async () => {
   loadSettings();
   await loadScanConfig();
   loadRules();
-  changeLanguage('tr');
   updateWizardSteps();
 }); 

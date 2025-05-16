@@ -63,4 +63,34 @@ export function updateCleanButton() {
     cleanBtn.classList.add('btn-outline-primary');
     cleanBtn.disabled = false; // Butonu aktif bırakıyoruz, tıklanınca uyarı vereceğiz
   }
+}
+
+// SweetAlert2 için dark mode desteği ekleyen yardımcı fonksiyon
+export function showSwal(options) {
+  const isDarkMode = document.body.classList.contains('dark-mode');
+  
+  // Dark mode varsa SweetAlert2 tema ayarlarını ekle
+  if (isDarkMode) {
+    options = {
+      ...options,
+      background: '#2d2d2d',
+      color: '#f5f5f5',
+      confirmButtonColor: '#6c599f', // Dark mode primary color
+      cancelButtonColor: '#6c757d',
+      customClass: {
+        popup: 'swal2-dark',
+        header: 'swal2-dark-header',
+        content: 'swal2-dark-content',
+        input: 'swal2-dark-input',
+        actions: 'swal2-dark-actions'
+      }
+    };
+  } else {
+    options = {
+      ...options,
+      confirmButtonColor: '#473185', // Light mode primary color
+    };
+  }
+  
+  return Swal.fire(options);
 } 

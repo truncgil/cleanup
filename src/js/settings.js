@@ -1,13 +1,25 @@
 import { languageSelect, darkModeToggle, lastScanDate, appLogo } from './dom.js';
+import { changeLanguage } from './translations.js';
 
 export function loadSettings() {
   const settings = JSON.parse(localStorage.getItem('settings') || '{}');
-  languageSelect.value = settings.language || 'tr';
-  darkModeToggle.checked = settings.darkMode || false;
+  
+  // Dil ayarı
+  const language = settings.language || 'tr';
+  languageSelect.value = language;
+  changeLanguage(language);
+  
+  // Dark mode ayarı
+  const isDarkMode = settings.darkMode || false;
+  darkModeToggle.checked = isDarkMode;
   lastScanDate.textContent = settings.lastScanDate || 'Hiç';
   
-  if (settings.darkMode) {
+  if (isDarkMode) {
     document.body.classList.add('dark-mode');
+    // Logo değiştirme
+    appLogo.src = 'assets/cleantr-dark.svg';
+  } else {
+    appLogo.src = 'assets/cleantr.svg';
   }
 }
 

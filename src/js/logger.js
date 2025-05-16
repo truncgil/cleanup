@@ -18,7 +18,10 @@ export async function addLog(message, type = 'info') {
     await currentToast.close();
   }
 
-  const Toast = Swal.mixin({
+  // Dark mode kontrolü
+  const isDarkMode = document.body.classList.contains('dark-mode');
+  
+  const toastOptions = {
     toast: true,
     position: 'bottom-end',
     showConfirmButton: false,
@@ -28,7 +31,20 @@ export async function addLog(message, type = 'info') {
       toast.addEventListener('mouseenter', Swal.stopTimer)
       toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
-  });
+  };
+  
+  // Dark mode ayarlarını ekle
+  if (isDarkMode) {
+    toastOptions.background = '#2d2d2d';
+    toastOptions.color = '#f5f5f5';
+    toastOptions.iconColor = '#f5f5f5';
+    toastOptions.customClass = {
+      popup: 'swal2-dark',
+      title: 'swal2-dark-title'
+    };
+  }
+
+  const Toast = Swal.mixin(toastOptions);
 
   currentToast = Toast.fire({
     icon: type,

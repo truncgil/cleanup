@@ -1,7 +1,7 @@
 import { scanButton, resultsContainer, totalSizeElement, scanConfig, scanResults, logContainer, lastScanDate } from './dom.js';
 import { translations, currentLanguage } from './translations.js';
 import { addLog } from './logger.js';
-import { updateStep, formatSize } from './utils.js';
+import { updateStep, formatSize, showSwal } from './utils.js';
 import { createResultElement } from './results.js';
 import { saveSettings } from './settings.js';
 
