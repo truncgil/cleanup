@@ -493,21 +493,63 @@ body.dark-mode .alert-danger {
 }
 
 .log-content {
-  background-color: #1e1e1e;
-  color: #d4d4d4;
-  padding: 1rem;
-  border-radius: 0.25rem;
-  font-family: 'Consolas', 'Monaco', monospace;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  max-height: 300px;
+  font-family: monospace;
+  font-size: 12px;
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 4px;
+  height: 300px;
   overflow-y: auto;
-  margin: 0;
+  color: #333;
+}
+
+.log-entry {
+  margin-bottom: 4px;
+  padding: 2px 0;
+  border-bottom: 1px solid #eee;
+  line-height: 1.5;
+}
+
+.log-info {
+  color: #0275d8;
+}
+
+.log-success {
+  color: #5cb85c;
+}
+
+.log-error {
+  color: #d9534f;
+}
+
+.log-warning {
+  color: #f0ad4e;
 }
 
 .dark-mode .log-content {
-  background-color: #2d2d2d;
+  background-color: #252525;
   color: #e0e0e0;
+  border: 1px solid #444;
+}
+
+.dark-mode .log-entry {
+  border-bottom: 1px solid #333;
+}
+
+.dark-mode .log-info {
+  color: #5bc0de;
+}
+
+.dark-mode .log-success {
+  color: #5cb85c;
+}
+
+.dark-mode .log-error {
+  color: #d9534f;
+}
+
+.dark-mode .log-warning {
+  color: #f0ad4e;
 }
 
 /* Wizard Styles */

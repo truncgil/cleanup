@@ -1,6 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
-contextBridge.exposeInMainWorld('api', {
+// API işlevlerini tanımla
+const apiInterface = {
   // Ayarlar
   getSettings: () => ipcRenderer.invoke('get-settings'),
   saveSettings: (settings) => ipcRenderer.invoke('save-settings', settings),
@@ -11,7 +12,13 @@ contextBridge.exposeInMainWorld('api', {
   // Tarama ve Temizleme
   scanDirectories: (rules) => ipcRenderer.invoke('scan-directories', rules),
   cleanDirectories: (paths) => ipcRenderer.invoke('clean-directories', paths),
+  removeDirectory: (path) => ipcRenderer.invoke('remove-directory', path),
+  getFolderSize: (path) => ipcRenderer.invoke('get-folder-size', path),
   
   // Yardımcı fonksiyonlar
   formatBytes: (bytes) => ipcRenderer.invoke('format-bytes', bytes)
-}); 
+};
+
+// Her iki adlandırmayı da kullanıma sun
+contextBridge.exposeInMainWorld('api', apiInterface);
+contextBridge.exposeInMainWorld('electronAPI', apiInterface); 

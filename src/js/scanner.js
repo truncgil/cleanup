@@ -51,11 +51,10 @@ export async function startScan() {
     addLog(`${folder.name} klasörü taranıyor...`);
     
     try {
-      // Burada gerçek klasör tarama işlemi yapılacak
-      // Şimdilik simüle ediyoruz
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Gerçek klasör boyutunu hesapla
+      const stats = await window.api.getFolderSize(folder.path);
+      const size = stats.size;
       
-      const size = Math.floor(Math.random() * 1024 * 1024 * 1000); // Rastgele boyut
       window.scanResults.push({
         id: folder.id,
         name: folder.name,

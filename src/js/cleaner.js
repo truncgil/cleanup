@@ -3,6 +3,30 @@ import { translations, currentLanguage } from './translations.js';
 import { addLog } from './logger.js';
 import { updateStep, formatSize, showSwal } from './utils.js';
 
+// Temizleme loglarına ekleme yapan fonksiyon
+function addCleanupLog(message, type = 'info') {
+  const logContent = document.getElementById('cleanup-log-content');
+  if (!logContent) return;
+
+  const timestamp = new Date().toLocaleTimeString();
+  const logEntry = document.createElement('div');
+  logEntry.className = `log-entry log-${type}`;
+  logEntry.innerHTML = `[${timestamp}] ${message}`;
+  logContent.appendChild(logEntry);
+  logContent.scrollTop = logContent.scrollHeight;
+}
+
+// Dizin temizleme fonksiyonu
+async function cleanDirectory(dirPath) {
+  try {
+    const result = await window.api.removeDirectory(dirPath);
+    return result.success;
+  } catch (error) {
+    console.error(`Temizleme hatası: ${dirPath}`, error);
+    return false;
+  }
+}
+
 export async function startCleanup() {
   // Seçili öğeleri kontrol et
   const selectedResults = document.querySelectorAll('.result-checkbox:checked');
@@ -38,6 +62,12 @@ export async function startCleanup() {
   const totalFiles = selectedResults.length;
   let cleanedFiles = 0;
   let totalCleanedSize = 0;
+  
+  // Temizleme loglarını temizle
+  const cleanupLogContent = document.getElementById('cleanup-log-content');
+  if (cleanupLogContent) {
+    cleanupLogContent.innerHTML = '';
+  }
 
   // İlerleme çubuğunu göster
   const progressBar = document.querySelector('#cleanup-progress');
@@ -52,6 +82,9 @@ export async function startCleanup() {
     showConfirmButton: false,
     allowOutsideClick: false
   });
+  
+  // Temizleme başladı logunu ekle
+  addCleanupLog('Temizleme işlemi başlatıldı...', 'info');
 
   for (const checkbox of selectedResults) {
     const resultElement = checkbox.closest('.card');
@@ -59,28 +92,47 @@ export async function startCleanup() {
 
     if (result) {
       try {
-        // Burada gerçek silme işlemi yapılacak
-        await new Promise(resolve => setTimeout(resolve, 500)); // Simülasyon
+        // Temizleme başlangıç logu
+        addCleanupLog(`"${result.name}" temizleniyor... (${formatSize(result.size)})`, 'info');
         
-        totalCleanedSize += result.size;
-        cleanedFiles++;
-      
-        // İstatistikleri güncelle
-        document.getElementById('total-cleaned').textContent = formatSize(totalCleanedSize);
-        document.getElementById('files-cleaned').textContent = cleanedFiles;
+        // Dizini temizle
+        const path = result.path;
+        const success = await cleanDirectory(path);
         
-        // İlerleme çubuğunu güncelle
-        const progress = (cleanedFiles / totalFiles) * 100;
-        progressBarInner.style.width = `${progress}%`;
-        progressBarInner.setAttribute('aria-valuenow', progress);
+        // İşlem başarılıysa
+        if (success) {
+          totalCleanedSize += result.size;
+          cleanedFiles++;
         
-        // Log ekle
-        addLog(`${result.name} temizlendi (${formatSize(result.size)})`, 'success');
-        
-        // Kartı kaldır
-        resultElement.remove();
+          // İstatistikleri güncelle
+          document.getElementById('total-cleaned').textContent = formatSize(totalCleanedSize);
+          document.getElementById('files-cleaned').textContent = cleanedFiles;
+          
+          // İlerleme çubuğunu güncelle
+          const progress = (cleanedFiles / totalFiles) * 100;
+          progressBarInner.style.width = `${progress}%`;
+          progressBarInner.setAttribute('aria-valuenow', progress);
+          
+          // Log ekle
+          addLog(`${result.name} temizlendi (${formatSize(result.size)})`, 'success');
+          addCleanupLog(`"${result.name}" başarıyla temizlendi (${formatSize(result.size)})`, 'success');
+          
+          // Kartı kaldır
+          resultElement.remove();
+        } else {
+          // Hata durumu - silme işlemi başarısız
+          const errorDetails = 'Dizin temizleme hatası';
+          addCleanupLog(`HATA: "${result.name}" temizlenemedi: ${errorDetails}`, 'error');
+          throw new Error(`Silme işlemi başarısız oldu: ${errorDetails}`);
+        }
       } catch (error) {
         addLog(`HATA: ${result.name} temizlenirken hata: ${error.message}`, 'error');
+        addCleanupLog(`HATA: "${result.name}" temizlenemedi: ${error.message}`, 'error');
+        
+        // Hata detaylarını göster
+        if (error.message) {
+          addCleanupLog(`Detaylar: ${error.message}`, 'error');
+        }
       }
     }
   }
@@ -96,6 +148,9 @@ export async function startCleanup() {
   const spaceSaved = ((totalCleanedSize / (1024 * 1024 * 1024)) * 100).toFixed(1);
   document.getElementById('space-saved').textContent = `${spaceSaved}%`;
   
+  // Temizleme tamamlandı logu
+  addCleanupLog(`Temizleme tamamlandı. Toplam ${formatSize(totalCleanedSize)} temizlendi.`, 'success');
+  
   // Temizleme tamamlandı bildirimi
   await showSwal({
     title: 'Temizleme Tamamlandı',
@@ -105,4 +160,17 @@ export async function startCleanup() {
   });
 
   addLog(`Temizleme tamamlandı. Toplam ${formatSize(totalCleanedSize)} temizlendi.`, 'success');
-} 
+}
+
+// Temizleme loglarını temizleme butonu için olay dinleyicisi
+document.addEventListener('DOMContentLoaded', () => {
+  const clearCleanupLogsButton = document.getElementById('clear-cleanup-logs');
+  if (clearCleanupLogsButton) {
+    clearCleanupLogsButton.addEventListener('click', () => {
+      const cleanupLogContent = document.getElementById('cleanup-log-content');
+      if (cleanupLogContent) {
+        cleanupLogContent.innerHTML = '';
+      }
+    });
+  }
+}); 

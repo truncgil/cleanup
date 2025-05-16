@@ -1,6 +1,16 @@
 {
   "scanFolders": [
     {
+      "id": "test_data",
+      "name": "Test Data",
+      "path": "/Users/umittunc/Desktop/Works/macos/cleanup/test_data",
+      "description": {
+        "tr": "Test data",
+        "en": "Test data"
+      },
+      "enabled": true
+    },
+    {
       "id": "xcode_derived_data",
       "name": "Derived Data",
       "path": "~/Library/Developer/Xcode/DerivedData",
@@ -79,6 +89,56 @@
         "en": "macOS system temporary folders. Usually safe to clean."
       },
       "enabled": true
+    },
+    {
+      "id": "user_caches",
+      "name": "User Caches",
+      "path": "~/Library/Caches",
+      "description": {
+        "tr": "Kullanıcı önbellek klasörleri. Çoğu uygulamanın önbellek dosyaları burada bulunur. Güvenle silinebilir.",
+        "en": "User cache folders. Most app caches are stored here. Safe to remove."
+      },
+      "enabled": true
+    },
+    {
+      "id": "downloads",
+      "name": "Downloads Folder",
+      "path": "~/Downloads",
+      "description": {
+        "tr": "İndirilen dosyalar klasörü. Gereksiz büyük dosyalar burada bulunabilir.",
+        "en": "Downloads folder. Large unnecessary files may be here."
+      },
+      "enabled": true
+    },
+    {
+      "id": "mail_attachments",
+      "name": "Mail Attachments",
+      "path": "~/Library/Containers/com.apple.mail/Data/Library/Mail Downloads",
+      "description": {
+        "tr": "Mail uygulamasından indirilen ekler. Silinmesi genellikle güvenlidir.",
+        "en": "Mail attachments downloaded by the Mail app. Usually safe to delete."
+      },
+      "enabled": true
+    },
+    {
+      "id": "messages_attachments",
+      "name": "Messages Attachments",
+      "path": "~/Library/Messages/Attachments",
+      "description": {
+        "tr": "Mesajlar uygulamasındaki medya ve dosya ekleri. Alan kazanmak için silinebilir.",
+        "en": "Attachments from the Messages app. Can be deleted to free up space."
+      },
+      "enabled": true
+    },
+    {
+      "id": "time_machine_snapshots",
+      "name": "Time Machine Snapshots",
+      "path": "/.MobileBackups",
+      "description": {
+        "tr": "Time Machine tarafından oluşturulan yerel anlık görüntüler. Silinmesi alan açabilir.",
+        "en": "Local snapshots created by Time Machine. Deleting can free up space."
+      },
+      "enabled": true
     }
   ]
-} 
+}

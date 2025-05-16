@@ -120,14 +120,40 @@ function scanDirectories(rules) {
   return results;
 }
 
-// Dizin temizleme
+// ~ işaretini ev dizini ile değiştiren fonksiyon
+function resolveHome(filepath) {
+  if (filepath.startsWith('~')) {
+    return path.join(os.homedir(), filepath.slice(1));
+  }
+  return filepath;
+}
+
+// Dizin içeriğini temizleyen fonksiyon
+function cleanDirectoryContents(dirPath) {
+  const resolvedPath = resolveHome(dirPath);
+  if (!fs.existsSync(resolvedPath)) return;
+
+  fs.readdirSync(resolvedPath).forEach(file => {
+    const fullPath = path.join(resolvedPath, file);
+    try {
+      fs.rmSync(fullPath, { recursive: true, force: true });
+    } catch (err) {
+      console.error(`Silinemedi: ${fullPath}`, err);
+    }
+  });
+}
+
+// Geriye uyumluluk için eski cleanDirectory fonksiyonu
 function cleanDirectory(dirPath) {
   try {
-    execSync(`rm -rf "${dirPath}"`);
-    return true;
+    cleanDirectoryContents(dirPath);
+    return { success: true };
   } catch (error) {
     console.error(`Temizleme hatası: ${dirPath}`, error);
-    return false;
+    return { 
+      success: false, 
+      error: error.message
+    };
   }
 }
 
@@ -155,11 +181,44 @@ ipcMain.handle('clean-directories', (event, paths) => {
   const results = [];
   
   for (const dirPath of paths) {
-    const success = cleanDirectory(dirPath);
-    results.push({ path: dirPath, success });
+    try {
+      cleanDirectoryContents(dirPath);
+      results.push({ 
+        path: dirPath, 
+        success: true
+      });
+    } catch (error) {
+      console.error(`Temizleme hatası: ${dirPath}`, error);
+      results.push({ 
+        path: dirPath, 
+        success: false,
+        error: error.message
+      });
+    }
   }
   
   return results;
+});
+
+ipcMain.handle('remove-directory', (event, dirPath) => {
+  return cleanDirectory(dirPath);
+});
+
+ipcMain.handle('get-folder-size', async (event, dirPath) => {
+  try {
+    const expandedPath = dirPath.replace(/^~/, os.homedir());
+    const resolvedPath = path.resolve(expandedPath);
+    
+    if (fs.existsSync(resolvedPath)) {
+      const size = getDirSize(resolvedPath);
+      return { success: true, size: size };
+    } else {
+      return { success: false, error: 'Dizin bulunamadı', size: 0 };
+    }
+  } catch (error) {
+    console.error(`Klasör boyutu hesaplama hatası: ${dirPath}`, error);
+    return { success: false, error: error.message, size: 0 };
+  }
 });
 
 ipcMain.handle('format-bytes', (event, bytes) => {
