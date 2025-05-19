@@ -166,7 +166,7 @@ button {
   height: 65vh;
 }
 .results-list2 {
-  height: 35vh;
+  max-height: 35vh;
 }
 
 .rule-item, .result-item {
