@@ -26,7 +26,7 @@ function createWindow() {
   });
 
   // Geliştirici araçlarını aç
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
 
   mainWindow.loadFile('index.html');
 }

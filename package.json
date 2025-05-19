@@ -1,11 +1,12 @@
 {
   "name": "cleantr",
+  "productName": "CleanTR",
   "version": "1.0.0",
   "description": "macOS geliştiricileri için disk temizleme uygulaması",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "dev": "electron . --debug",
+    "dev": "electron .",
     "build": "electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -24,9 +25,10 @@
     "sweetalert2": "^11.7.32"
   },
   "build": {
-    "appId": "com.cleantr.app",
+    "appId": "com.truncgil.cleantr",
     "mac": {
-      "category": "public.app-category.developer-tools"
+      "icon": "assets/icon.icns",
+      "category": "public.app-category.utilities"
     }
   }
 }

@@ -1,16 +1,6 @@
 {
   "scanFolders": [
     {
-      "id": "test_data",
-      "name": "Test Data",
-      "path": "/Users/umittunc/Desktop/Works/macos/cleanup/test_data",
-      "description": {
-        "tr": "Test data",
-        "en": "Test data"
-      },
-      "enabled": true
-    },
-    {
       "id": "xcode_derived_data",
       "name": "Derived Data",
       "path": "~/Library/Developer/Xcode/DerivedData",
