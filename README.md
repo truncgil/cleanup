@@ -122,3 +122,26 @@ npm run build
 ## Lisans
 
 MIT 
+
+## Özellikler
+
+- **Geliştirici Odaklı Temizlik:** Xcode, Android Studio, Flutter gibi popüler geliştirme araçlarının oluşturduğu geçici ve gereksiz dosyaları otomatik olarak tespit eder ve temizler.
+- **Kapsamlı Kural Sistemi:** Temizlenecek klasörler ve dosya türleri kolayca seçilebilir, özelleştirilebilir.
+- **Güvenli Temizlik:** Sadece güvenle silinebilecek dosyalar hedeflenir, sistem dosyalarınıza zarar gelmez.
+- **Çoklu Dil Desteği:** Türkçe ve İngilizce arayüz ile geniş kullanıcı kitlesine hitap eder.
+- **Koyu/Açık Tema:** Kullanıcı tercihlerine göre tema seçimi yapılabilir.
+- **Detaylı Loglama:** Tüm tarama ve temizlik işlemleri detaylı şekilde loglanır, geçmiş işlemler incelenebilir.
+- **Kullanıcı Dostu Arayüz:** Modern ve anlaşılır arayüz ile herkes kolayca kullanabilir.
+- **Açık Kaynak:** MIT lisansı ile özgürce kullanılabilir ve geliştirilebilir.
+
+## Kullanım Senaryoları
+
+- Xcode projelerinde biriken DerivedData, arşivler ve simülatör dosyalarını hızlıca temizlemek.
+- Android Studio ve Flutter projelerinde build, cache ve log dosyalarını silerek disk alanı kazanmak.
+- Node.js projelerinde npm ve yarn önbelleklerini temizleyerek sisteminizi hafifletmek.
+- macOS sisteminde zamanla biriken geçici dosyaları tek tıkla temizlemek.
+- Geliştirici bilgisayarınızı düzenli ve hızlı tutmak için periyodik temizlik yapmak.
+
+---
+
+Daha fazla bilgi ve katkı için projeye göz atabilir, öneri ve geri bildirimlerinizi iletebilirsiniz! 
