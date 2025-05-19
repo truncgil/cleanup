@@ -16,9 +16,12 @@ const apiInterface = {
   getFolderSize: (path) => ipcRenderer.invoke('get-folder-size', path),
   
   // Yardımcı fonksiyonlar
-  formatBytes: (bytes) => ipcRenderer.invoke('format-bytes', bytes)
+  formatBytes: (bytes) => ipcRenderer.invoke('format-bytes', bytes),
+  
+  // Finder'da açma
+  openInFinder: (folderPath) => ipcRenderer.invoke('openInFinder', folderPath)
 };
 
-// Her iki adlandırmayı da kullanıma sun
+// API'yi expose et
 contextBridge.exposeInMainWorld('api', apiInterface);
 contextBridge.exposeInMainWorld('electronAPI', apiInterface); 

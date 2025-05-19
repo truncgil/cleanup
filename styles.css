@@ -57,7 +57,7 @@ main {
   flex-direction: column;
 }
 
-.results-list, .rules-list {
+.results-list, .rules-list, .results-list2 {
   flex: 1;
   overflow-y: auto;
   padding-right: 10px;
@@ -164,6 +164,9 @@ button {
   gap: 12px;
   overflow: auto;
   height: 65vh;
+}
+.results-list2 {
+  height: 35vh;
 }
 
 .rule-item, .result-item {
@@ -795,6 +798,10 @@ body.dark-mode .btn-outline-secondary:hover {
   border-radius: 100% !important;
   width: 100px;
   height: 100px;
+}
+#fixed-action-buttons {
+  width: 150px;
+  margin:0 auto;
 }
 
 /* SweetAlert2 Dark Mode Styles */

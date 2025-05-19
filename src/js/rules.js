@@ -54,6 +54,28 @@ function createRuleElement(rule) {
     updateCleanButton();
   });
 
+  path.addEventListener('click', (e) => {
+    e.preventDefault();
+    console.log('Yol tıklandı:', rule.path);
+    
+    if (window.api && typeof window.api.openInFinder === 'function') {
+      console.log('openInFinder API çağrılıyor...');
+      
+      window.api.openInFinder(rule.path)
+        .then(result => {
+          console.log('openInFinder sonucu:', result);
+          if (!result.success) {
+            console.error('Finder açılırken hata:', result.error);
+          }
+        })
+        .catch(error => {
+          console.error('Finder açılırken hata:', error);
+        });
+    } else {
+      console.error('openInFinder API bulunamadı');
+    }
+  });
+
   return clone;
 }
 

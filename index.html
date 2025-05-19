@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; font-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:;">
   <title>Cleantr - macOS Temizlik Uygulaması</title>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -201,7 +201,9 @@
           <h5 class="card-title mb-0 rule-name"></h5>
         </div>
         <div class="rule-details">
-          <div class="text-muted small rule-path"></div>
+          <div class="text-muted small">
+            <a href="#" class="rule-path text-decoration-none" style="cursor: pointer;"></a>
+          </div>
           <div class="mt-2 rule-description"></div>
         </div>
       </div>
@@ -243,6 +245,28 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+  
+  <!-- API Test Script -->
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      console.log('API test başlatılıyor...');
+      console.log('window.api:', window.api);
+      
+      // API varlığını kontrol et
+      if (window.api) {
+        console.log('API mevcut:', Object.keys(window.api));
+        
+        // OpenInFinder varlığını kontrol et
+        if (typeof window.api.openInFinder === 'function') {
+          console.log('openInFinder fonksiyonu mevcut');
+        } else {
+          console.error('openInFinder fonksiyonu mevcut değil!');
+        }
+      } else {
+        console.error('API mevcut değil!');
+      }
+    });
+  </script>
   
   <!-- Modüler JavaScript -->
   <script type="module" src="src/js/index.js"></script>

@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { execSync } = require('child_process');
@@ -12,13 +12,12 @@ let mainWindow;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 900,
-    height: 700,
-    minWidth: 800,
-    minHeight: 600,
+    width: 1200,
+    height: 800,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
+      sandbox: false,
       preload: path.join(__dirname, 'preload.js')
     },
     titleBarStyle: 'hiddenInset',
@@ -26,19 +25,26 @@ function createWindow() {
     icon: path.join(__dirname, 'assets', 'icon.png')
   });
 
+  // Geliştirici araçlarını aç
+  mainWindow.webContents.openDevTools();
+
   mainWindow.loadFile('index.html');
 }
 
 app.whenReady().then(() => {
   createWindow();
 
-  app.on('activate', function () {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+    }
   });
 });
 
-app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') app.quit();
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
 });
 
 // Ayarları kur
@@ -223,4 +229,28 @@ ipcMain.handle('get-folder-size', async (event, dirPath) => {
 
 ipcMain.handle('format-bytes', (event, bytes) => {
   return bytes.format(bytes);
+});
+
+// API'ler
+ipcMain.handle('openInFinder', async (event, folderPath) => {
+  try {
+    console.log('Ana süreçte openInFinder çağrıldı, yol:', folderPath);
+    
+    // ~ karakterini ev diziniyle değiştir
+    const resolvedPath = resolveHome(folderPath);
+    console.log('Çözümlenmiş yol:', resolvedPath);
+    
+    // Yolun varlığını kontrol et
+    if (!fs.existsSync(resolvedPath)) {
+      console.error('Yol bulunamadı:', resolvedPath);
+      return { success: false, error: 'Yol bulunamadı: ' + resolvedPath };
+    }
+    
+    // macOS'ta showItemInFolder kullan - bu direkt olarak Finder'da klasörü gösterir
+    shell.showItemInFolder(resolvedPath);
+    return { success: true };
+  } catch (error) {
+    console.error('Finder açılırken hata:', error);
+    return { success: false, error: error.message };
+  }
 }); 
